@@ -50,7 +50,7 @@ routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
-    return web.json_response("https://baba-txt.onrender.com/")
+    return web.json_response("https://text-leech-bot-for-render.onrender.com/")
 
 async def web_server():
     web_app = web.Application(client_max_size=30000000)
@@ -132,11 +132,11 @@ async def start_command(bot: Client, message: Message):
     # Caption for the image
     caption = (
         "**𝐇𝐞𝐥𝐥𝐨 𝐃𝐞𝐚𝐫 👋!**\n\n"
-        "➠ **𝐈 𝐚𝐦 𝐚 𝐓𝐞𝐱𝐭 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐫 𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐖𝐢𝐭𝐡 <a href='https://t.me/AllCourseADMIN_BOT'>Admin</a>**\n"
+        "➠ **𝐈 𝐚𝐦 𝐚 𝐓𝐞𝐱𝐭 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐫 𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐖𝐢𝐭𝐡 <a href="https://t.me/AllCourseADMIN_BOT">Admin</a>**\n"
         "➠ **Extract Videos & PDFs From Your Text File and Upload to Telegram!**\n"
         "➠ **For Guide Use Command /guide 📖**\n\n"
         "➠ **Use /txt Command to Download From TXT File** 📄\n\n"
-        "➠ **𝐌𝐚𝐝𝐞 𝐁𝐲:** <a href='https://t.me/AllCourseADMIN_BOT'>Admin</a>"
+        "➠ **𝐌𝐚𝐝𝐞 𝐁𝐲:** <a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
     )
 
     # Send the image with caption and buttons
@@ -370,7 +370,7 @@ async def remove_channel(client, message: Message):
 @app.on_message(filters.command("id"))
 async def id_command(client, message: Message):
     if message.chat.type == "private":
-        # प्राइवेट चैट के लिए यूजर का ID भेजें
+        # For private chats, return the user ID
         user_id = message.from_user.id
         await message.reply_text(
             f"🎉 **Success!**\n\n"
@@ -378,15 +378,15 @@ async def id_command(client, message: Message):
             f"📌 **Use this ID for further requests.**"
         )
     else:
-        # ग्रुप या चैनल के लिए चैट का ID भेजें
+        # For groups or channels, return the chat ID with -100 prefix
         chat_id = message.chat.id
         await message.reply_text(
             f"✅ **Success!**\n\n"
-            f"🆔 **This Group/Channel ID:**\n`{chat_id}`\n\n"
+            f"🆔 **This Group/Channel ID:**\n`-100{chat_id}`\n\n"
             f"📌 **Use this ID for further requests.**\n\n"
             f"To link this group/channel, use the following command:\n"
-            f"`/add_channel {chat_id}`"
-    )
+            f"`/add_channel -100{chat_id}`"
+        )
 
 YOUR_ADMIN_ID = 7136372052
 
