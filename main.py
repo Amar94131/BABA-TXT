@@ -50,7 +50,7 @@ routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
-    return web.json_response("https://text-leech-bot-for-render.onrender.com/")
+    return web.json_response("https://baba-txt.onrender.com/")
 
 async def web_server():
     web_app = web.Application(client_max_size=30000000)
@@ -132,11 +132,11 @@ async def start_command(bot: Client, message: Message):
     # Caption for the image
     caption = (
         "**𝐇𝐞𝐥𝐥𝐨 𝐃𝐞𝐚𝐫 👋!**\n\n"
-        "➠ **𝐈 𝐚𝐦 𝐚 𝐓𝐞𝐱𝐭 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐫 𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐖𝐢𝐭𝐡 <a href="https://t.me/AllCourseADMIN_BOT">Admin</a>**\n"
+        "➠ **I Am TXT Download**\n"
         "➠ **Extract Videos & PDFs From Your Text File and Upload to Telegram!**\n"
-        "➠ **For Guide Use Command /guide 📖**\n\n"
+        "➠ **For Guide Use Command /help 📖**\n\n"
         "➠ **Use /txt Command to Download From TXT File** 📄\n\n"
-        "➠ **𝐌𝐚𝐝𝐞 𝐁𝐲:** <a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
+        "➠ **Made By:** 🫣"
     )
 
     # Send the image with caption and buttons
@@ -234,7 +234,7 @@ def admin_only(func):
     return wrapper
 
 # How to use:-
-@bot.on_message(filters.command("guide"))
+@bot.on_message(filters.command("help"))
 async def guide_handler(client: Client, message: Message):
     guide_text = (
         "🔑 **How to get started with Premium**:\n\n"
