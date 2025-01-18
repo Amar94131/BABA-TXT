@@ -370,7 +370,7 @@ async def remove_channel(client, message: Message):
 @app.on_message(filters.command("id"))
 async def id_command(client, message: Message):
     if message.chat.type == "private":
-        # For private chats, return the user ID
+        # प्राइवेट चैट के लिए यूजर का ID भेजें
         user_id = message.from_user.id
         await message.reply_text(
             f"🎉 **Success!**\n\n"
@@ -378,15 +378,15 @@ async def id_command(client, message: Message):
             f"📌 **Use this ID for further requests.**"
         )
     else:
-        # For groups or channels, return the chat ID with -100 prefix
+        # ग्रुप या चैनल के लिए चैट का ID भेजें
         chat_id = message.chat.id
         await message.reply_text(
             f"✅ **Success!**\n\n"
-            f"🆔 **This Group/Channel ID:**\n`-100{chat_id}`\n\n"
+            f"🆔 **This Group/Channel ID:**\n`{chat_id}`\n\n"
             f"📌 **Use this ID for further requests.**\n\n"
             f"To link this group/channel, use the following command:\n"
-            f"`/add_channel -100{chat_id}`"
-        )
+            f"`/add_channel {chat_id}`"
+    )
 
 YOUR_ADMIN_ID = 7136372052
 
