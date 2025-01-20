@@ -377,7 +377,7 @@ async def remove_channel(client, message: Message):
 # /id Command
 
 @app.on_message(filters.command("id"))
-def get_id(client, message):
+async def get_id(client, message):
     message.reply_text(f"Your ID: {message.from_user.id}")
     if message.chat.type == "private":
         # For private chats, return the user Id
