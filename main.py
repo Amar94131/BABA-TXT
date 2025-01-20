@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-import json
+from channels_data import json
 import time
 import aiohttp
 import asyncio
