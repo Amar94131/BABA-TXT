@@ -139,12 +139,11 @@ async def start_command(bot: Client, message: Message):
     
     # Caption for the image
     caption = (
-        "**Hello dear 👋!**\n\n"
-        "➠ **I Am TXT Download**\n"
-        "➠ **Extract Videos & PDFs From Your Text File and Upload to Telegram!**\n"
-        "➠ **For Guide Use Command /help 📖**\n\n"
-        "➠ **Use /txt Command to Download From TXT File** 🪄\n\n"
-        "➠ **Made By:** 🫣"
+        "Hello dear 👋!\n\n"
+        "I Am TXT Download\n"
+        "For Guide Use Command /help 📖**\n\n"
+        "Use /txt Command to Download From TXT File** 🪄\n\n"
+        "Made By:** 🫣"
     )
 
     # Send the image with caption and buttons
@@ -375,17 +374,16 @@ async def remove_channel(client, message: Message):
         await message.reply_text("Invalid command format. Use: /remove_channels <channel_id>")
 
 # /id Command
-
 @app.on_message(filters.command("id"))
-async def get_id(client, message):
-    message.reply_text(f"Your ID: {message.from_user.id}")
+async def id_command(client, message: Message):
     if message.chat.type == "private":
-        # For private chats, return the user Id
+        # For private chats, return the user ID
+        user_id = message.from_user.id
         await message.reply_text(
             f"🎉 **Success!**\n\n"
             f"🆔 **Your User ID:**\n`{user_id}`\n\n"
             f"📌 **Use this ID for further requests.**"
-        )
+)
     else:
         # For groups or channels, return the chat ID with -100 prefix
         chat_id = message.chat.id
