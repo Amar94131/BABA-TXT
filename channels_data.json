@@ -1,1 +1,19 @@
+import json
+
+def create_default_json_file():
+    # चैनल्स का डिफॉल्ट डेटा
+    default_data = {
+        "channels": [
+            {"id": 1, "name": "Channel One", "description": "This is the first channel."},
+            {"id": 2, "name": "Channel Two", "description": "This is the second channel."}
+        ]
+    }
+
+    # JSON फाइल में डिफॉल्ट डेटा लिखना
+    with open("channels.json", "w") as f:
+        json.dump(default_data, f, indent=4)  # फॉर्मेटेड JSON लिखें
+    print("डिफॉल्ट JSON फाइल बनाई गई।")
+
+# फाइल बनाएं
+create_default_json_file()
 
