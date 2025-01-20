@@ -457,11 +457,11 @@ async def moni_handler(client: Client, m: Message):
         if not any(user[0] == user_id for user in subscription_data):
             await m.reply_text("❌ You are not a premium user. Please upgrade your subscription! 💎")
             return
-    else:
-        channels = read_channels_data()
-        if str(m.chat.id) not in channels:
-            await m.reply_text("❗ You are not a premium user. Subscribe now for exclusive access! 🚀")
-            return
+  #  else:
+       # channels = read_channels_data()
+   #     if str(m.chat.id) not in channels:
+ #           await m.reply_text("❗ You are not a premium user. Subscribe now for exclusive access! 🚀")
+  #          return
             
     editable = await m.reply_text('𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐀 𝐓𝐱𝐭 𝐅𝐢𝐥𝐞 𝐒𝐞𝐧𝐝 𝐇𝐞𝐫𝐞 ⏍')
 
