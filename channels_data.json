@@ -1,19 +1,17 @@
 import json
 
-def create_default_json_file():
-    # चैनल्स का डिफॉल्ट डेटा
-    default_data = {
-        "channels": [
-            {"id": 1, "name": "Channel One", "description": "This is the first channel."},
-            {"id": 2, "name": "Channel Two", "description": "This is the second channel."}
-        ]
-    }
+def read_channels_data():
+    try:
+        with open("channels.json", "r") as f:
+            content = f.read().strip()  # फाइल के कंटेंट को पढ़ें और खाली स्थान हटा दें
+            if not content:  # अगर कंटेंट खाली है
+                print("फाइल खाली है, डिफॉल्ट डेटा लोड किया जा रहा है।")
+                return {"channels": []}  # डिफॉल्ट चैनल्स लिस्ट
+            return json.loads(content)  # यदि कंटेंट मौजूद है, तो JSON पार्स करें
+    except (json.JSONDecodeError, FileNotFoundError) as e:
+        print(f"त्रुटि: {e}. फाइल को लोड नहीं किया जा सका।")
+        return {"channels": []}  # फाइल न होने पर भी डिफॉल्ट डेटा लौटाएं
 
-    # JSON फाइल में डिफॉल्ट डेटा लिखना
-    with open("channels.json", "w") as f:
-        json.dump(default_data, f, indent=4)  # फॉर्मेटेड JSON लिखें
-    print("डिफॉल्ट JSON फाइल बनाई गई।")
-
-# फाइल बनाएं
-create_default_json_file()
-
+# फाइल से डेटा पढ़ने की कोशिश करें
+channels = read_channels_data()
+print(channels)
