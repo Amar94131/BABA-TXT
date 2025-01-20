@@ -137,11 +137,11 @@ async def start_command(bot: Client, message: Message):
     
     # Caption for the image
     caption = (
-        "**𝐇𝐞𝐥𝐥𝐨 𝐃𝐞𝐚𝐫 👋!**\n\n"
+        "**Hello dear 👋!**\n\n"
         "➠ **I Am TXT Download**\n"
         "➠ **Extract Videos & PDFs From Your Text File and Upload to Telegram!**\n"
         "➠ **For Guide Use Command /help 📖**\n\n"
-        "➠ **Use /txt Command to Download From TXT File** 📄\n\n"
+        "➠ **Use /txt Command to Download From TXT File** 🪄\n\n"
         "➠ **Made By:** 🫣"
     )
 
@@ -394,7 +394,7 @@ async def id_command(client, message: Message):
             f"`/add_channel -100{chat_id}`"
         )
 
-YOUR_ADMIN_ID = 7136372052
+YOUR_ADMIN_ID = 1928404158
 
 # Helper function to check admin privilege
 def is_admin(user_id):
@@ -497,11 +497,11 @@ async def moni_handler(client: Client, m: Message):
         print(len(links))
 
     except:
-        await m.reply_text("∝ 𝐈𝐧𝐯𝐚𝐥𝐢𝐝 𝐟𝐢𝐥𝐞 𝐢𝐧𝐩𝐮𝐭.")
+        await m.reply_text("Invalid file input")
         if os.path.exists(x):
             os.remove(x)
 
-    await editable.edit(f"∝ 𝐓𝐨𝐭𝐚𝐥 𝐋𝐢𝐧𝐤 𝐅𝐨𝐮𝐧𝐝 𝐀𝐫𝐞 🔗** **{len(links)}**\n\n𝐒𝐞𝐧𝐝 𝐅𝐫𝐨𝐦 𝐖𝐡𝐞𝐫𝐞 𝐘𝐨𝐮 𝐖𝐚𝐧𝐭 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐈𝐧𝐢𝐭𝐚𝐥 𝐢𝐬 **1**")
+    await editable.edit(f"Total Link Found Are 🔗** **{len(links)}**\n\nSend From Where You Want To Download Inital Is**1**")
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)               
@@ -516,7 +516,7 @@ async def moni_handler(client: Client, m: Message):
     else:
         b_name = raw_text0
         
-    await editable.edit("∝ 𝐄𝐧𝐭𝐞𝐫 𝐄𝐞𝐬𝐨𝐥𝐮𝐭𝐢𝐨𝐧 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
+    await editable.edit("Enter File Quality 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -701,7 +701,7 @@ async def moni_handler(client: Client, m: Message):
                         
                           
                 else:
-                    Show = f"❊⟱ 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ 𝐐𝐮𝐥𝐢𝐭𝐲 » {raw_text2}`\n\n**🔗 𝐔𝐑𝐋 »** `{url}`"
+                    Show = f"❊⟱ Downloading ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ Quality » {raw_text2}`\n\n**🔗 URL »** `{url}`"
                     prog = await m.reply_text(f"**Downloading:-**\n\n**📄 Title:-** `{name}\n\nQuality - {raw_text2}`\n\n**link:**`{url}`\n\n**Bot Made By @AllCourseADMIN_BOT**")
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -712,13 +712,13 @@ async def moni_handler(client: Client, m: Message):
 
             except Exception as e:
                 await m.reply_text(
-                    f"⌘ 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐮𝐩𝐭𝐞𝐝\n\n⌘ 𝐍𝐚𝐦𝐞 » {name}\n⌘ 𝐋𝐢𝐧𝐤 » `{url}`"
+                    f"⌘ Downloding Interested\n\n⌘ Name » {name}\n⌘ Link » `{url}`"
                 )
                 continue
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("DONE 🫣")
+    await m.reply_text("DONE ✅")
 
 
 
