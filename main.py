@@ -440,11 +440,11 @@ async def stop_handler(client, message: Message):
         if not any(user[0] == user_id for user in subscription_data):
             await message.reply_text("😔 You are not a premium user. Please subscribe to get access! 🔒")
             return
-    else:
-        channels = read_channels_data()
-        if str(message.chat.id) not in channels:
-            await message.reply_text("🚫 You are not a premium user. Subscribe to unlock all features! ✨")
-            return
+ #   else:
+  #      channels = read_channels_data()
+  #      if str(message.chat.id) not in channels:
+   #         await message.reply_text("🚫 You are not a premium user. Subscribe to unlock all features! ✨")
+    #        return
 
     await message.reply_text(" Stopped🚦" , True)
     os.execl(sys.executable, sys.executable, *sys.argv)
