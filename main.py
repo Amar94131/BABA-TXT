@@ -33,7 +33,9 @@ from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from flask import Flask
+from pyrogram import Client, filters
 
+app = Client("my_bot")  # Bot session या API setup.
 
 
 # Flask App Initialization
@@ -373,11 +375,12 @@ async def remove_channel(client, message: Message):
         await message.reply_text("Invalid command format. Use: /remove_channels <channel_id>")
 
 # /id Command
+
 @app.on_message(filters.command("id"))
-async def id_command(client, message: Message):
+def get_id(client, message):
+    message.reply_text(f"Your ID: {message.from_user.id}")
     if message.chat.type == "private":
-        # For private chats, return the user ID
-        user_id = message.from_user.id
+        # For private chats, return the user Id
         await message.reply_text(
             f"🎉 **Success!**\n\n"
             f"🆔 **Your User ID:**\n`{user_id}`\n\n"
