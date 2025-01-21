@@ -139,7 +139,7 @@ async def start_command(bot: Client, message: Message):
     
     # Caption for the image
     caption = (
-        "Hello dear 👋!\n\nI Am TXT Download Bot\nUse Command /help 📖\n\nUse /txt Command to Download From TXT File 🪄\n\nMade By:<a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
+        "Hello dear 👋!\n\nI Am TXT Download Bot\nUse Command /help 📖\n\nUse /txt Command to Download From TXT File 🪄\n\nMade By:<a href='https://t.me/AllCourseADMIN_BOT'>Admin</a>"
     )
 
     # Send the image with caption and buttons
