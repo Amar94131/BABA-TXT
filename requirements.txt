@@ -30,6 +30,8 @@ werkzeug==2.0.2
 itsdangerous==2.0.1
 ffprobe
 youtube-dl
+
+cloudscraper
 yt-dlp
 
 mediainfo
