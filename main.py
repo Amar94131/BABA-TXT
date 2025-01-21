@@ -240,12 +240,16 @@ def admin_only(func):
 @bot.on_message(filters.command("help"))
 async def guide_handler(client: Client, message: Message):
     guide_text = (
-        "🔑 How to get started with Premium\n\n1. First of all**, contact the owner and buy a premium plan. 💰\n2. If you are a premium user, you can check your plan by using ` /myplan ` 🔍\n\n📖 Usage\n\n"
+        "🔑 How to get started with Premium\n\n"
+        "1. First of all, contact the owner and buy a premium plan. 💰\n"
+        "2. If you are a premium user, you can check your plan by using/n"
+        "` /myplan ` 🔍\n\n"
+        "📖 Usage\n\n"
         "1. ` /add_channel -100{channel_id} ` - Add a channel to the bot.\n"
         "2. ` /remove_channel -100{channel_id} ` - Remove a channel from the bot.\n"
         "3. ` /txt .txt ` file command - Process the .txt file.\n"
         "4. ` /stop ` - Stop the task running in the bot. 🚫\n\n"
-        "If you have any questions, feel free to ask! 💬\n\n<a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
+        "If you have any questions, feel free to ask! 💬\n\n<a href='https://t.me/AllCourseADMIN_BOT'>Admin</a>"
     )
     await message.reply_text(guide_text)
 
