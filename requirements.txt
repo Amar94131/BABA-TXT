@@ -32,6 +32,7 @@ ffprobe
 youtube-dl
 
 cloudscraper
+pytube
 yt-dlp
 
 mediainfo
