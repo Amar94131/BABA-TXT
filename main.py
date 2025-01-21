@@ -139,11 +139,7 @@ async def start_command(bot: Client, message: Message):
     
     # Caption for the image
     caption = (
-        "Hello dear 👋!\n\n"
-        "I Am TXT Download\n"
-        "For Guide Use Command /help 📖**\n\n"
-        "Use /txt Command to Download From TXT File** 🪄\n\n"
-        "Made By:** 🫣"
+        "Hello dear 👋!\n\nI Am TXT Download Bot\nUse Command /help 📖\n\nUse /txt Command to Download From TXT File 🪄\n\nMade By:<a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
     )
 
     # Send the image with caption and buttons
@@ -244,15 +240,12 @@ def admin_only(func):
 @bot.on_message(filters.command("help"))
 async def guide_handler(client: Client, message: Message):
     guide_text = (
-        "🔑 **How to get started with Premium**:\n\n"
-        "1. **First of all**, contact the owner and buy a premium plan. 💰\n"
-        "2. **If you are a premium user**, you can check your plan by using `/myplan`. 🔍\n\n"
-        "📖 **Usage**:\n\n"
-        "1. `/add_channel -100{channel_id}` - Add a channel to the bot.\n"
-        "2. `/remove_channel -100{channel_id}` - Remove a channel from the bot.\n"
-        "3. `/txt .txt` file command - Process the .txt file.\n"
-        "4. `/stop` - Stop the task running in the bot. 🚫\n\n"
-        "If you have any questions, feel free to ask! 💬"
+        "🔑 How to get started with Premium\n\n1. First of all**, contact the owner and buy a premium plan. 💰\n2. If you are a premium user, you can check your plan by using ` /myplan ` 🔍\n\n📖 Usage\n\n"
+        "1. ` /add_channel -100{channel_id} ` - Add a channel to the bot.\n"
+        "2. ` /remove_channel -100{channel_id} ` - Remove a channel from the bot.\n"
+        "3. ` /txt .txt ` file command - Process the .txt file.\n"
+        "4. ` /stop ` - Stop the task running in the bot. 🚫\n\n"
+        "If you have any questions, feel free to ask! 💬\n\n<a href="https://t.me/AllCourseADMIN_BOT">Admin</a>"
     )
     await message.reply_text(guide_text)
 
@@ -541,7 +534,7 @@ async def moni_handler(client: Client, m: Message):
     
     
 
-    await editable.edit("**Enter Your Name or send `de` for use default**")
+    await editable.edit("**Enter Your Name or send `De` for use default**")
 
     # Listen for the user's response
     input3: Message = await bot.listen(editable.chat.id)
@@ -554,8 +547,8 @@ async def moni_handler(client: Client, m: Message):
 
     # Default credit message
     credit = "️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == 'de':
-        CR = '@AllCourseADMIN_BOT'
+    if raw_text3 == 'De':
+        CR = '<pre><code>@AllCourseADMIN_BOT</code></pre>'
     elif raw_text3:
         CR = raw_text3
     else:
@@ -647,8 +640,8 @@ async def moni_handler(client: Client, m: Message):
         
                 
             try:                
-                cc = f'**📽️ VIDEO ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .mkv\n\n<pre><code>🪄 Batch Name: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}**'
-                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .pdf \n\n<pre><code>🪄 Batch Name: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}**'
+                cc = f'**📽️ VIDEO ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .mkv\n\n🪄 Batch Name: {b_name}\n\n🔻 Extracted By : {CR}**'
+                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .pdf \n\n🪄 Batch Name: {b_name}\n\n🔻 Extracted By : {CR}**'
                                                  
                 if "drive" in url:
                     try:
@@ -703,7 +696,7 @@ async def moni_handler(client: Client, m: Message):
                           
                 else:
                     Show = f"❊⟱ Downloading ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ Quality » {raw_text2}`\n\n**🔗 URL »** `{url}`"
-                    prog = await m.reply_text(f"**Downloading:-**\n\n**📄 Title:-** `{name}\n\nQuality - {raw_text2}`\n\n**link:**`{url}`\n\n**Bot Made By @AllCourseADMIN_BOT**")
+                    prog = await m.reply_text(f"**Downloading:-**\n\n**📄 Title:-** `{name}\n\nQuality - {raw_text2}`\n\n**link:**`{url}`\n\nBot Made By @AllCourseADMIN_BOT")
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
                     await prog.delete(True)
