@@ -86,13 +86,13 @@ async def progress_bar(current, total, reply, start):
             sp = str(hrb(speed)) + "/s"
             tot = hrb(total)
             cur = hrb(current)
-            bar_length = 13
+            bar_length = 10
             completed_length = int(current * bar_length / total)
             remaining_length = bar_length - completed_length            
             progress_bar = "🔸" * completed_length + "🔹" * remaining_length
             
             try:
-                await reply.edit(f'`╭──⌈ 🌟 𝙐𝙥𝙡𝙤𝙖𝙙𝙞𝙣𝙜 📤 ⌋──╮\n'
+                await reply.edit(f'`╭──⌈ 🌟 𝙐𝙥𝙡𝙤𝙖𝙙𝙞𝙣𝙜 📤  ⌋──╮\n'
                                  f'├ {progress_bar}\n'
                                  f'├ 𝙎𝙥𝙚𝙚𝙙: 🚀 {sp} \n'
                                  f'├ 𝙋𝙧𝙤𝙜𝙧𝙚𝙨𝙨: 📟 {perc} \n'
