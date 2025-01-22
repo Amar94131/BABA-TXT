@@ -133,13 +133,14 @@ async def start_command(bot: Client, message: Message):
         chat_id=message.chat.id,
         text="Loading... ⏳🔄"
     )
+
   
     # Choose a random image URL
     random_image_url = random.choice(image_urls)
     
     # Caption for the image
     caption = (
-        "𝖧𝖾𝗅𝗅𝗈 𝖽𝖾𝖺𝗋 👋!\n\n𝖨 𝖠𝗆 𝖳𝖷𝖳 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖡𝗈𝗍 𝖴𝗌𝖾 𝖢𝗈𝗆𝗆𝖺𝗇𝖽 /help 📖 𝖴𝗌𝖾 /txt 𝖢𝗈𝗆𝗆𝖺𝗇𝖽 𝗍𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖳𝖷𝖳 𝖥𝗂𝗅𝖾 🪄\n\n<blockquote>𝖬𝖺𝖽𝖾 𝖡𝗒 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a></blockquote>"
+        "𝖧𝖾𝗅𝗅𝗈 𝖽𝖾𝖺𝗋 👋!\n\n𝖨 𝖠𝗆 𝖳𝖷𝖳 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖡𝗈𝗍 𝖴𝗌𝖾 /help\n📖 𝖴𝗌𝖾 /txt 𝗍𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖳𝖷𝖳 𝖥𝗂𝗅𝖾\n\n<blockquote>𝖬𝖺𝖽𝖾 𝖡𝗒 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a></blockquote>"
     )
 
     # Send the image with caption and buttons
@@ -512,7 +513,7 @@ async def moni_handler(client: Client, m: Message):
     else:
         b_name = raw_text0
         
-    await editable.edit("Enter File Quality 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
+    await editable.edit("Enter File Quality 🎬\n☞ 144,\n☞ 240,\n☞ 360,\n☞ 480,\n☞ 720,\n☞ 1080\nPlease Choose Quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -550,7 +551,7 @@ async def moni_handler(client: Client, m: Message):
     # Default credit message
     credit = "️ ⁪⁬⁮⁮⁮"
     if raw_text3 == 'De':
-        CR = '<blockquote>@AllCourseADMIN_BOT</blockquote>'
+        CR = "<a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     elif raw_text3:
         CR = raw_text3
     else:
@@ -642,8 +643,8 @@ async def moni_handler(client: Client, m: Message):
         
                 
             try:                
-                cc = f'**📽️ VIDEO ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .mkv\n\n🪄 Batch Name: {b_name}\n\n🔻 Extracted By : {CR}**'
-                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📜 Title: {name1} .pdf \n\n🪄 Batch Name: {b_name}\n\n🔻 Extracted By : {CR}**'
+                cc = f'**📽️ VIDEO ID: {str(count).zfill(3)}.\n\n🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}\n\n📜 Title: {name1} .mkv\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}**'
+                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}\n\n📜 Title: {name1} .pdf\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}**'
                                                  
                 if "drive" in url:
                     try:
