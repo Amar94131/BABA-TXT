@@ -306,7 +306,7 @@ async def show_users(client, message: Message):
         users_list = "\n".join(
             [f"{idx + 1}. User ID: `{user[0]}`, Expiration Date: `{user[1]}`" for idx, user in enumerate(subscription_data)]
         )
-        await message.reply_text(f"**👥 Current Subscribed Users:**\n\n{users_list}")
+        await message.reply_text(f"👥 Current Subscribed Users:\n\n{users_list}")
     else:
         await message.reply_text("ℹ️ No users found in the subscription data.")
 
@@ -318,14 +318,14 @@ async def my_plan(client, message: Message):
 
     # Define YOUR_ADMIN_ID somewhere in your code
     if user_id == str(YOUR_ADMIN_ID):  # YOUR_ADMIN_ID should be an integer
-        await message.reply_text("**✨ You have permanent access!**")
+        await message.reply_text("✨ You have permanent access!")
     elif any(user[0] == user_id for user in subscription_data):  # Assuming subscription_data is a list of [user_id, expiration_date]
         expiration_date = next(user[1] for user in subscription_data if user[0] == user_id)
         await message.reply_text(
-            f"**📅 Your Premium Plan Status**\n\n"
-            f"**🆔 User ID**: `{user_id}`\n"
-            f"**⏳ Expiration Date**: `{expiration_date}`\n"
-            f"**🔒 Status**: *Active*"
+            f"📅 Your Premium Plan Status\n\n"
+            f"🆔 User ID: `{user_id}`\n"
+            f"⏳ Expiration Date: `{expiration_date}`\n"
+            f"🔒 Status**: Active"
         )
     else:
         await message.reply_text("**❌ You are not a premium user.**")
@@ -377,7 +377,7 @@ async def remove_channel(client, message: Message):
 
 # /id Command
 @app.on_message(filters.command("id"))
-async def id_command(client, message: Message):
+async def id_command(client: Client, message: Message):
     if message.chat.type == "private":
         # For private chats, return the user ID
         user_id = message.from_user.id
@@ -385,16 +385,16 @@ async def id_command(client, message: Message):
             f"🎉 Success!\n\n"
             f"🆔 Your User ID:\n`{user_id}`\n\n"
             f"📌 Use this ID for further requests."
-)
+        )
     else:
-        # For groups or channels, return the chat ID with -100 prefix
+        # For groups or channels, return the chat ID
         chat_id = message.chat.id
         await message.reply_text(
-            f"✅ Success!**\n\n"
-            f"🆔 This Group/Channel ID:\n`-100{chat_id}`\n\n"
+            f"✅ Success!\n\n"
+            f"🆔 This Group/Channel ID:\n`{chat_id}`\n\n"
             f"📌 Use this ID for further requests.\n\n"
             f"To link this group/channel, use the following command:\n"
-            f"`/add_channel -100{chat_id}`"
+            f"`/add_channel {chat_id}`"
         )
 
 YOUR_ADMIN_ID = 1928404158
