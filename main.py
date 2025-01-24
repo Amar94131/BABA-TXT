@@ -121,7 +121,7 @@ Busy = InlineKeyboardMarkup(
 
 # Image URLs for the random image feature
 image_urls = [
-    "https://i.ibb.co/dpRKmmj/file-3957.jpg",
+    "https://envs.sh/8lA.jpg",
     # Add more image URLs as needed
 ]
 
@@ -248,8 +248,14 @@ async def guide_handler(client: Client, message: Message):
         "1. /add_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "2. /remove_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "3. /txt 𝖯𝗋𝗈𝖼𝖾𝗌𝗌 𝗍𝗁𝖾 𝗍𝗑𝗍 𝖿𝗂𝗅𝖾\n"
-        "4. /stop 𝖲𝗍𝗈𝗉 𝗍𝗁𝖾 𝗍𝖺𝗌𝗄 🚫\n\n"
-        "𝖨𝖿 𝗒𝗈𝗎 𝗁𝖺𝗏𝖾 𝖺𝗇𝗒 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇𝗌 💬 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
+        "4. /stop 𝖲𝗍𝗈𝗉 𝗍𝗁𝖾 𝗍𝖺𝗌𝗄 🚫\n
+        "5. /adduser user id\n
+        "6. /removeuser user id\n
+        "7. /users only admin\n
+        "8. /id \n
+        "9. /remove_all_channels \n
+        "10. /allowed_channels \n\n"
+        "A𝗇𝗒 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇𝗌 💬 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     )
     await message.reply_text(guide_text)
 
@@ -504,16 +510,16 @@ async def moni_handler(client: Client, m: Message):
     await input0.delete(True)               
 
     # This is where you would set up your bot and connect the handle_command function      
-    await editable.edit("**Enter Batch Name or send d for grabing from text filename.**")
+    await editable.edit("**Enter Batch Name or send 1 for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
-    if raw_text0 == 'd':
+    if raw_text0 == '1':
         b_name = file_name
     else:
         b_name = raw_text0
         
-    await editable.edit("Enter File Quality 🎬\n☞ 144,\n☞ 240,\n☞ 360,\n☞ 480,\n☞ 720,\n☞ 1080\nPlease Choose Quality")
+    await editable.edit("Enter File Quality 🎬\n☞ 144\n☞ 240\n☞ 360\n☞ 480\n☞ 720\n☞ 1080\nPlease Choose Quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -537,7 +543,7 @@ async def moni_handler(client: Client, m: Message):
     
     
 
-    await editable.edit("**Enter Your Name or send `De` for use default**")
+    await editable.edit("Enter Your Name or send `1` for use default")
 
     # Listen for the user's response
     input3: Message = await bot.listen(editable.chat.id)
@@ -550,14 +556,14 @@ async def moni_handler(client: Client, m: Message):
 
     # Default credit message
     credit = "️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == 'De':
+    if raw_text3 == '1':
         CR = "<a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     elif raw_text3:
         CR = raw_text3
     else:
         CR = credit
    
-    await editable.edit("🌄 Now send the Thumb url if don't want thumbnail send no ")
+    await editable.edit("🌄 Now send the Thumb url if don't want thumbnail send 1 ")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -568,7 +574,7 @@ async def moni_handler(client: Client, m: Message):
         getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
         thumb = "thumb.jpg"
     else:
-        thumb == "no"
+        thumb == "1"
 
     if len(links) == 1:
         count = 1
@@ -643,8 +649,8 @@ async def moni_handler(client: Client, m: Message):
         
                 
             try:                
-                cc = f'**📽️ VIDEO ID: {str(count).zfill(3)}.\n\n🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}\n\n📜 Title: {name1} .mkv\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}**'
-                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}\n\n📜 Title: {name1} .pdf\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}**'
+                cc = f'📽️ VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 Title: {name1}.mkv\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}'
+                cc1 = f'📁 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 Title: {name1}.pdf\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}'
                                                  
                 if "drive" in url:
                     try:
@@ -698,8 +704,8 @@ async def moni_handler(client: Client, m: Message):
                         
                           
                 else:
-                    Show = f"❊⟱ Downloading ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ Quality » {raw_text2}`\n\n**🔗 URL »** `{url}`"
-                    prog = await m.reply_text(f"**Downloading:-**\n\n**📄 Title:-** `{name}\n\nQuality - {raw_text2}`\n\n**link:**`{url}`\n\nBot Made By @AllCourseADMIN_BOT")
+                    Show = f"❊⟱ Downloading ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ Quality » {raw_text2}`\n\n🔗 URL » `{url}`"
+                    prog = await m.reply_text(f"Downloading:-\n\n📄 Title:- `{name}\n\nQuality - {raw_text2}`\n\nlink:`{url}`\n\nBot Made By @AllCourseADMIN_BOT")
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
                     await prog.delete(True)
