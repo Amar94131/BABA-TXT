@@ -244,7 +244,7 @@ async def guide_handler(client: Client, message: Message):
         "🔑 𝖧𝗈𝗐 𝗍𝗈 𝗀𝖾𝗍 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗐𝗂𝗍𝗁 𝖯𝗋𝖾𝗆𝗂𝗎𝗆\n\n" 
         "1. 𝖥𝗂𝗋𝗌𝗍 𝗈𝖿 𝖺𝗅𝗅, 𝖼𝗈𝗇𝗍𝖺𝖼𝗍 𝗍𝗁𝖾 𝗈𝗐𝗇𝖾𝗋 𝖺𝗇𝖽 𝖻𝗎𝗒 𝖺 𝗉𝗋𝖾𝗆𝗂𝗎𝗆 𝗉𝗅𝖺𝗇 💰\n"
         "2. 𝖨𝖿 𝗒𝗈𝗎 𝖺𝗋𝖾 𝖺 𝗉𝗋𝖾𝗆𝗂𝗎𝗆 𝗎𝗌𝖾𝗋 𝗒𝗈𝗎 𝖼𝖺𝗇 𝖼𝗁𝖾𝖼𝗄 𝗒𝗈𝗎𝗋 𝗉𝗅𝖺𝗇 𝖻𝗒 𝗎𝗌𝗂𝗇𝗀 /myplan 🔍\n\n"
-        "📖 𝖴𝗌𝖺𝗀𝖾\n\n"
+        "  📖 𝖴𝗌𝖺𝗀𝖾\n\n"
         "1. /add_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "2. /remove_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "3. /txt 𝖯𝗋𝗈𝖼𝖾𝗌𝗌 𝗍𝗁𝖾 𝗍𝗑𝗍 𝖿𝗂𝗅𝖾\n"
@@ -563,7 +563,7 @@ async def moni_handler(client: Client, m: Message):
     else:
         CR = credit
    
-    await editable.edit("🌄 Now send the Thumb url if don't want thumbnail send 1 ")
+    await editable.edit("🌄 Now send the Thumb url if don't want thumbnail send no ")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -574,7 +574,7 @@ async def moni_handler(client: Client, m: Message):
         getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
         thumb = "thumb.jpg"
     else:
-        thumb == "1"
+        thumb == "no"
 
     if len(links) == 1:
         count = 1
@@ -649,8 +649,8 @@ async def moni_handler(client: Client, m: Message):
         
                 
             try:                
-                cc = f'💾 VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.mkv\n\n<blockquote>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</blockquote>\n\n🔻 Extracted By : {CR}'
-                cc1 = f'📒 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.pdf\n\n<blockquote>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</blockquote>\n\n🔻 Extracted By : {CR}'
+                cc = f'💾 VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.mkv\n\n<pre><code>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}'
+                cc1 = f'📒 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.pdf\n\n<pre><code>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}'
                                                  
                 if "drive" in url:
                     try:
