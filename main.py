@@ -430,7 +430,7 @@ async def remove_all_channels(client, message: Message):
 
     # Clear the channels data
     write_channels_data([])
-    await message.reply_text("✅ **All channels have been removed successfully.**")
+    await message.reply_text("✅ All channels have been removed successfully.")
 
 
 # 6. /stop
@@ -442,11 +442,11 @@ async def stop_handler(client, message: Message):
         if not any(user[0] == user_id for user in subscription_data):
             await message.reply_text("😔 You are not a premium user. Please subscribe to get access! 🔒")
             return
- #   else:
-  #      channels = read_channels_data()
-  #      if str(message.chat.id) not in channels:
-   #         await message.reply_text("🚫 You are not a premium user. Subscribe to unlock all features! ✨")
-    #        return
+    else:
+        channels = read_channels_data()
+        if str(message.chat.id) not in channels:
+            await message.reply_text("🚫 You are not a premium user. Subscribe to unlock all features! ✨")
+            return
 
     await message.reply_text(" Stopped🚦" , True)
     os.execl(sys.executable, sys.executable, *sys.argv)
@@ -459,13 +459,13 @@ async def moni_handler(client: Client, m: Message):
         if not any(user[0] == user_id for user in subscription_data):
             await m.reply_text("❌ You are not a premium user. Please upgrade your subscription! 💎")
             return
-  #  else:
-       # channels = read_channels_data()
-   #     if str(m.chat.id) not in channels:
- #           await m.reply_text("❗ You are not a premium user. Subscribe now for exclusive access! 🚀")
-  #          return
+    else:
+        channels = read_channels_data()
+        if str(m.chat.id) not in channels:
+            await m.reply_text("❗ You are not a premium user. Subscribe now for exclusive access! 🚀")
+            return
             
-    editable = await m.reply_text('𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐀 𝐓𝐱𝐭 𝐅𝐢𝐥𝐞 𝐒𝐞𝐧𝐝 𝐇𝐞𝐫𝐞 ⏍')
+    editable = await m.reply_text('𝖳𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖠 𝖳𝗑𝗍 𝖥𝗂𝗅𝖾 𝖲𝖾𝗇𝖽 𝖧𝖾𝗋𝖾 📑')
 
     try:
         input: Message = await client.listen(editable.chat.id)
@@ -510,7 +510,7 @@ async def moni_handler(client: Client, m: Message):
     await input0.delete(True)               
 
     # This is where you would set up your bot and connect the handle_command function      
-    await editable.edit("**Enter Batch Name or send 1 for grabing from text filename.**")
+    await editable.edit("Enter Batch Name or send 1 for grabing from text filename.")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
