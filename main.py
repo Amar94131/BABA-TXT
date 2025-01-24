@@ -382,17 +382,17 @@ async def id_command(client, message: Message):
         # For private chats, return the user ID
         user_id = message.from_user.id
         await message.reply_text(
-            f"🎉 **Success!**\n\n"
-            f"🆔 **Your User ID:**\n`{user_id}`\n\n"
-            f"📌 **Use this ID for further requests.**"
+            f"🎉 Success!\n\n"
+            f"🆔 Your User ID:\n`{user_id}`\n\n"
+            f"📌 Use this ID for further requests."
 )
     else:
         # For groups or channels, return the chat ID with -100 prefix
         chat_id = message.chat.id
         await message.reply_text(
-            f"✅ **Success!**\n\n"
-            f"🆔 **This Group/Channel ID:**\n`-100{chat_id}`\n\n"
-            f"📌 **Use this ID for further requests.**\n\n"
+            f"✅ Success!**\n\n"
+            f"🆔 This Group/Channel ID:\n`-100{chat_id}`\n\n"
+            f"📌 Use this ID for further requests.\n\n"
             f"To link this group/channel, use the following command:\n"
             f"`/add_channel -100{chat_id}`"
         )
@@ -415,7 +415,7 @@ async def allowed_channels(client, message: Message):
     channels = read_channels_data()
     if channels:
         channels_list = "\n".join([f"- {channel}" for channel in channels])
-        await message.reply_text(f"**📋 Allowed Channels:**\n\n{channels_list}")
+        await message.reply_text(f"📋 Allowed Channels:\n\n{channels_list}")
     else:
         await message.reply_text("ℹ️ No channels are currently allowed.")
 
@@ -649,8 +649,8 @@ async def moni_handler(client: Client, m: Message):
         
                 
             try:                
-                cc = f'📽️ VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 Title: {name1}.mkv\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}'
-                cc1 = f'📁 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 Title: {name1}.pdf\n\n🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}\n\n🔻 Extracted By : {CR}'
+                cc = f'💾 VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.mkv\n\n<blockquote>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</blockquote>\n\n🔻 Extracted By : {CR}'
+                cc1 = f'📒 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.pdf\n\n<blockquote>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</blockquote>\n\n🔻 Extracted By : {CR}'
                                                  
                 if "drive" in url:
                     try:
