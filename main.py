@@ -248,12 +248,12 @@ async def guide_handler(client: Client, message: Message):
         "1. /add_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "2. /remove_channel {𝖼𝗁𝖺𝗇𝗇𝖾𝗅_𝗂𝖽}\n"
         "3. /txt 𝖯𝗋𝗈𝖼𝖾𝗌𝗌 𝗍𝗁𝖾 𝗍𝗑𝗍 𝖿𝗂𝗅𝖾\n"
-        "4. /stop 𝖲𝗍𝗈𝗉 𝗍𝗁𝖾 𝗍𝖺𝗌𝗄 🚫\n
-        "5. /adduser user id\n
-        "6. /removeuser user id\n
-        "7. /users only admin\n
-        "8. /id \n
-        "9. /remove_all_channels \n
+        "4. /stop 𝖲𝗍𝗈𝗉 𝗍𝗁𝖾 𝗍𝖺𝗌𝗄 🚫\n"
+        "5. /adduser user id\n"
+        "6. /removeuser user id\n"
+        "7. /users only admin\n"
+        "8. /id \n"
+        "9. /remove_all_channels \n"
         "10. /allowed_channels \n\n"
         "A𝗇𝗒 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇𝗌 💬 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     )
