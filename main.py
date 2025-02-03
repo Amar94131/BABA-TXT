@@ -73,7 +73,7 @@ async def get_fsub(bot, message):
             channel_link = f"https://t.me/{chat.username}"  # Already requested
         
         except Exception:
-            channel_link = "https://telegram.me/Techifybots"  # Backup link
+            channel_link = "https://t.me/+HaKOt2VCvi41Mzll"  # Backup link
 
         temp_buttons.append(InlineKeyboardButton(f"📢 Request to Join {i}", url=channel_link))
 
