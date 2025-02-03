@@ -19,7 +19,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, #AUTH_CHANNELS
+from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -41,13 +41,10 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import InviteRequestSent
 
 
-
-
-
 from pyrogram.errors import RPCError
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-AUTH_CHANNELS = ["+apLcuXWWPuFhNGY1", "+HaKOt2VCvi41Mzll"]  # चैनल usernames यहां रखें
+AUTH_CHANNELS = ["@+apLcuXWWPuFhNGY1", "@+HaKOt2VCvi41Mzll"]
 
 async def get_fsub(bot, message):
     user_id = message.from_user.id
@@ -72,13 +69,15 @@ async def get_fsub(bot, message):
             channel_title = chat.title or "Join Request Channel"
             invite_link = chat.invite_link or f"https://t.me/{chat.username}"
 
+            buttons.append([
+                InlineKeyboardButton(f"🔑 Request to Join: {channel_title}", url=invite_link)
+            ])
         except Exception as e:
             print(f"Error creating invite link: {e}")
             continue
 
-        buttons.append([
-            InlineKeyboardButton(f"🔑 Request to Join: {channel_title}", url=invite_link)
-        ])
+    if not buttons:
+        buttons = [[InlineKeyboardButton("Default Channel", url="https://t.me/Techifybots")]]
 
     await message.reply(
         f"Hello {message.from_user.mention},\n\n"
@@ -86,6 +85,10 @@ async def get_fsub(bot, message):
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
+
+
+
+
 
 
 
