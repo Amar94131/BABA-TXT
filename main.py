@@ -40,6 +40,8 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
 from pyrogram.errors import InviteRequestSent
 
+
+
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
@@ -49,7 +51,6 @@ async def get_fsub(bot, message):
             member = await bot.get_chat_member(channel_id, user_id)
             if member.status in ["left", "kicked", "restricted"]:
                 not_joined.append(channel_id)
-        
         except RPCError:
             not_joined.append(channel_id)
 
@@ -57,41 +58,26 @@ async def get_fsub(bot, message):
         return True
 
     buttons = []
-    temp_buttons = []
-    
-    for i, channel_id in enumerate(not_joined, start=1):
+
+    for channel_id in not_joined:
         try:
             chat = await bot.get_chat(channel_id)
-            
-            # ✅ Check if it's a public channel with username
-            if chat.username:
-                channel_link = f"https://t.me/{chat.username}?request=join"
-            else:
-                raise ValueError("No valid join link")
-
-        except InviteRequestSent:
-            channel_link = f"https://t.me/{chat.username}"  # Already requested
-        
+            channel_title = chat.title or "Our Private Channel"
+            invite_link = f"https://t.me/{chat.username}?join" if chat.username else chat.invite_link
         except Exception:
-            channel_link = "https://t.me/+HaKOt2VCvi41Mzll"  # Backup link
+            channel_title = "Default Channel"
+            invite_link = "https://telegram.me/Techifybots"
 
-        temp_buttons.append(InlineKeyboardButton(f"📢 Request to Join {i}", url=channel_link))
-
-        if len(temp_buttons) == 2:
-            buttons.append(temp_buttons)
-            temp_buttons = []
-
-    if temp_buttons:
-        buttons.append(temp_buttons)  
+        buttons.append([
+            InlineKeyboardButton(f"🔑 Request to Join: {channel_title}", url=invite_link)
+        ])
 
     await message.reply(
-        f"प्रिय {message.from_user.mention},\n\n"
-        "बॉट का उपयोग करने के लिए आपको हमारे अपडेट चैनलों में शामिल होना होगा। "
-        "कृपया नीचे दिए गए चैनलों पर 'Request to Join' भेजें:",
+        f"Hello {message.from_user.mention},\n\n"
+        "To access the bot features, please send a request to join our private channels below.",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
-
 
 
 
