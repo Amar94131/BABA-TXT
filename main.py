@@ -38,6 +38,8 @@ from pyrogram import Client, filters
 from pyrogram.errors import RPCError
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
+from pyrogram.errors import InviteRequestSent
+
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
@@ -60,15 +62,18 @@ async def get_fsub(bot, message):
     for i, channel_id in enumerate(not_joined, start=1):
         try:
             chat = await bot.get_chat(channel_id)
-            if chat.invite_link:
-                channel_link = chat.invite_link  # अगर Invite Link उपलब्ध हो तो
-            elif chat.username:
-                channel_link = f"https://t.me/{chat.username}?join"  # पब्लिक चैनल के लिए Request to Join लिंक
+            
+            # ✅ Check if it's a public channel with username
+            if chat.username:
+                channel_link = f"https://t.me/{chat.username}?request=join"
             else:
                 raise ValueError("No valid join link")
 
+        except InviteRequestSent:
+            channel_link = f"https://t.me/{chat.username}"  # Already requested
+        
         except Exception:
-            channel_link = "https://telegram.me/Techifybots"  # बैकअप लिंक
+            channel_link = "https://telegram.me/Techifybots"  # Backup link
 
         temp_buttons.append(InlineKeyboardButton(f"📢 Request to Join {i}", url=channel_link))
 
@@ -82,7 +87,7 @@ async def get_fsub(bot, message):
     await message.reply(
         f"प्रिय {message.from_user.mention},\n\n"
         "बॉट का उपयोग करने के लिए आपको हमारे अपडेट चैनलों में शामिल होना होगा। "
-        "कृपया नीचे दिए गए चैनलों से जुड़ें:",
+        "कृपया नीचे दिए गए चैनलों पर 'Request to Join' भेजें:",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
