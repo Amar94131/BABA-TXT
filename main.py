@@ -44,31 +44,33 @@ from pyrogram.errors import InviteRequestSent
 
 
 
+from pyrogram.errors import RPCError
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+
+AUTH_CHANNELS = ["+apLcuXWWPuFhNGY1", "+HaKOt2VCvi41Mzll"]  # चैनल usernames यहां रखें
+
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
 
-    for channel_id in AUTH_CHANNELS:
+    for channel_username in AUTH_CHANNELS:
         try:
-            member = await bot.get_chat_member(channel_id, user_id)
+            member = await bot.get_chat_member(channel_username, user_id)
             if member.status in ["left", "kicked", "restricted"]:
-                not_joined.append(channel_id)
+                not_joined.append(channel_username)
         except RPCError:
-            not_joined.append(channel_id)
+            not_joined.append(channel_username)
 
     if not not_joined:
         return True
 
     buttons = []
 
-    for channel_id in not_joined:
+    for channel_username in not_joined:
         try:
-            chat = await bot.get_chat(channel_id)
+            chat = await bot.get_chat(channel_username)
             channel_title = chat.title or "Join Request Channel"
-            invite_link = chat.invite_link  # Invite link for private channels
-
-            if not invite_link:  # Ensure invite link exists
-                invite_link = await bot.export_chat_invite_link(channel_id)
+            invite_link = chat.invite_link or f"https://t.me/{chat.username}"
 
         except Exception as e:
             print(f"Error creating invite link: {e}")
