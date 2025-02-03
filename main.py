@@ -43,7 +43,6 @@ from pyrogram.errors import InviteRequestSent
 
 
 
-
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
@@ -68,16 +67,14 @@ async def get_fsub(bot, message):
     for i, channel_id in enumerate(not_joined, start=1):
         try:
             chat = await bot.get_chat(channel_id)
-            channel_link = chat.invite_link
-            
-            if not channel_link:
-                raise ValueError("No invite link available")
+            # Instead of direct invite link, show a message that admin approval is needed
+            channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
 
         except Exception:
-            channel_link = "https://telegram.me/Techifybots"
+            channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
 
-        # Add button for each channel
-        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i}", url=channel_link))
+        # Add button for joining request
+        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i} - Request to Join", callback_data=f"join_request_{channel_id}"))
 
         # Group buttons in pairs
         if len(temp_buttons) == 2:
@@ -92,11 +89,31 @@ async def get_fsub(bot, message):
         "You need to join our update channels to access all the features of this bot. "
         "Due to server overload, only members of our channels can use the bot. "
         "Thank you for your understanding! 😊\n\n"
-        "Please join the following channels to proceed:\n\n"
-        "Note: If you need approval to join, please wait for admin approval. 🙂",
+        "Please request to join the following channels. Admin will approve your request shortly:\n\n",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
+
+# Handle callback query for join request
+async def handle_callback_query(bot, callback_query):
+    if callback_query.data.startswith("join_request_"):
+        channel_id = callback_query.data.split("_")[2]
+        user_id = callback_query.from_user.id
+        
+        # Send request message to admin (you can send to a specific admin or channel)
+        # Example: Send request to channel admin or bot admin for approval
+        admin_chat_id = "1928404158"
+        await bot.send_message(
+            admin_chat_id,
+            f"User {callback_query.from_user.mention} ({user_id}) has requested to join Channel {channel_id}. Please review and approve.",
+        )
+        
+        # Notify user about their request
+        await callback_query.answer(
+            f"Your request to join Channel {channel_id} has been sent to the admin for approval.",
+            show_alert=True,
+            )
+
 
 
 
