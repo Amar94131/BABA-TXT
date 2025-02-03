@@ -42,7 +42,11 @@ from pyrogram.errors import InviteRequestSent
 
 
 
+from pyrogram.errors import RPCError
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client
 
+# Function to send the join request buttons
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
@@ -51,7 +55,6 @@ async def get_fsub(bot, message):
         try:
             member = await bot.get_chat_member(channel_id, user_id)
 
-            # Checking if user is a member or if they are restricted or left
             if member.status in ["left", "kicked", "restricted"]:
                 not_joined.append(channel_id)
         
@@ -67,29 +70,27 @@ async def get_fsub(bot, message):
     for i, channel_id in enumerate(not_joined, start=1):
         try:
             chat = await bot.get_chat(channel_id)
-            # Instead of direct invite link, show a message that admin approval is needed
             channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
 
         except Exception:
             channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
 
         # Add button for joining request
-        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i} - Request to Join", callback_data=f"join_request_{channel_id}"))
+        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i} - Request to Join", callback_data=f"join_request_{channel_id}_{user_id}"))
 
-        # Group buttons in pairs
         if len(temp_buttons) == 2:
             buttons.append(temp_buttons)
             temp_buttons = []
 
     if temp_buttons:
-        buttons.append(temp_buttons)  # Add remaining buttons if any
+        buttons.append(temp_buttons)
 
     await message.reply(
         f"Dear {message.from_user.mention},\n\n"
         "You need to join our update channels to access all the features of this bot. "
         "Due to server overload, only members of our channels can use the bot. "
         "Thank you for your understanding! 😊\n\n"
-        "Please request to join the following channels. Admin will approve your request shortly:\n\n",
+        "Please request to join the following channels. You will be granted access to the bot immediately:\n\n",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
@@ -97,22 +98,38 @@ async def get_fsub(bot, message):
 # Handle callback query for join request
 async def handle_callback_query(bot, callback_query):
     if callback_query.data.startswith("join_request_"):
-        channel_id = callback_query.data.split("_")[2]
-        user_id = callback_query.from_user.id
-        
-        # Send request message to admin (you can send to a specific admin or channel)
-        # Example: Send request to channel admin or bot admin for approval
-        admin_chat_id = "1928404158"
-        await bot.send_message(
-            admin_chat_id,
-            f"User {callback_query.from_user.mention} ({user_id}) has requested to join Channel {channel_id}. Please review and approve.",
-        )
-        
-        # Notify user about their request
+        # Extracting the channel ID and user ID
+        _, channel_id, user_id = callback_query.data.split("_")
+
+        # Send a message notifying that the user has requested to join the channel
+        # No need for admin approval, as we're giving access immediately
         await callback_query.answer(
-            f"Your request to join Channel {channel_id} has been sent to the admin for approval.",
+            f"Your request to join Channel {channel_id} has been received! You now have access to the bot.",
             show_alert=True,
-            )
+        )
+
+        # Activate the user for bot access immediately after request (no admin approval needed)
+        await activate_user_in_bot(bot, user_id, channel_id)
+
+# Function to activate the bot for the user
+async def activate_user_in_bot(bot, user_id, channel_id):
+    # Logic to activate the user in the bot
+    # In real-world, you can store the approved user in a database or a list
+    approved_users = []  # Use a database or persistent storage in production
+    approved_users.append(user_id)
+
+    # Notify the user that they now have access to the bot
+    user = await bot.get_users(user_id)
+    await bot.send_message(
+        user_id,
+        f"Dear {user.first_name},\n\nYour request to join Channel {channel_id} has been approved. You now have full access to all features of the bot! 😊",
+    )
+
+    # Allow the user to use bot features (example: unlock bot commands)
+    print(f"User {user.first_name} is now activated and can use the bot.")
+
+
+
 
 
 
