@@ -41,47 +41,59 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import InviteRequestSent
 
 
-from pyrogram.errors import RPCError
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-AUTH_CHANNELS = ["@+apLcuXWWPuFhNGY1", "@+HaKOt2VCvi41Mzll"]
+
 
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
 
-    for channel_username in AUTH_CHANNELS:
+    for channel_id in AUTH_CHANNELS:
         try:
-            member = await bot.get_chat_member(channel_username, user_id)
+            member = await bot.get_chat_member(channel_id, user_id)
+
+            # Checking if user is a member or if they are restricted or left
             if member.status in ["left", "kicked", "restricted"]:
-                not_joined.append(channel_username)
+                not_joined.append(channel_id)
+        
         except RPCError:
-            not_joined.append(channel_username)
+            not_joined.append(channel_id)
 
     if not not_joined:
         return True
 
     buttons = []
-
-    for channel_username in not_joined:
+    temp_buttons = []
+    
+    for i, channel_id in enumerate(not_joined, start=1):
         try:
-            chat = await bot.get_chat(channel_username)
-            channel_title = chat.title or "Join Request Channel"
-            invite_link = chat.invite_link or f"https://t.me/{chat.username}"
+            chat = await bot.get_chat(channel_id)
+            channel_link = chat.invite_link
+            
+            if not channel_link:
+                raise ValueError("No invite link available")
 
-            buttons.append([
-                InlineKeyboardButton(f"🔑 Request to Join: {channel_title}", url=invite_link)
-            ])
-        except Exception as e:
-            print(f"Error creating invite link: {e}")
-            continue
+        except Exception:
+            channel_link = "https://telegram.me/Techifybots"
 
-    if not buttons:
-        buttons = [[InlineKeyboardButton("Default Channel", url="https://t.me/Techifybots")]]
+        # Add button for each channel
+        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i}", url=channel_link))
+
+        # Group buttons in pairs
+        if len(temp_buttons) == 2:
+            buttons.append(temp_buttons)
+            temp_buttons = []
+
+    if temp_buttons:
+        buttons.append(temp_buttons)  # Add remaining buttons if any
 
     await message.reply(
-        f"Hello {message.from_user.mention},\n\n"
-        "Please send a request to join the following channels for access:",
+        f"Dear {message.from_user.mention},\n\n"
+        "You need to join our update channels to access all the features of this bot. "
+        "Due to server overload, only members of our channels can use the bot. "
+        "Thank you for your understanding! 😊\n\n"
+        "Please join the following channels to proceed:\n\n"
+        "Note: If you need approval to join, please wait for admin approval. 🙂",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
