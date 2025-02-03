@@ -19,7 +19,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN
+from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -34,6 +34,80 @@ from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from flask import Flask
 from pyrogram import Client, filters
+
+from pyrogram.errors import RPCError
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+
+async def get_fsub(bot, message):
+    user_id = message.from_user.id
+    not_joined = []
+
+    for channel_id in AUTH_CHANNELS:
+        try:
+            member = await bot.get_chat_member(channel_id, user_id)
+            if member.status in ["left", "kicked", "restricted"]:
+                not_joined.append(channel_id)
+        
+        except RPCError:
+            not_joined.append(channel_id)
+
+    if not not_joined:
+        return True
+
+    buttons = []
+    temp_buttons = []
+    
+    for i, channel_id in enumerate(not_joined, start=1):
+        try:
+            chat = await bot.get_chat(channel_id)
+            if chat.invite_link:
+                channel_link = chat.invite_link  # अगर Invite Link उपलब्ध हो तो
+            elif chat.username:
+                channel_link = f"https://t.me/{chat.username}?join"  # पब्लिक चैनल के लिए Request to Join लिंक
+            else:
+                raise ValueError("No valid join link")
+
+        except Exception:
+            channel_link = "https://telegram.me/Techifybots"  # बैकअप लिंक
+
+        temp_buttons.append(InlineKeyboardButton(f"📢 Request to Join {i}", url=channel_link))
+
+        if len(temp_buttons) == 2:
+            buttons.append(temp_buttons)
+            temp_buttons = []
+
+    if temp_buttons:
+        buttons.append(temp_buttons)  
+
+    await message.reply(
+        f"प्रिय {message.from_user.mention},\n\n"
+        "बॉट का उपयोग करने के लिए आपको हमारे अपडेट चैनलों में शामिल होना होगा। "
+        "कृपया नीचे दिए गए चैनलों से जुड़ें:",
+        reply_markup=InlineKeyboardMarkup(buttons),
+    )
+    return False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app = Client("my_bot")  # Bot session या API setup.
 
@@ -129,6 +203,9 @@ image_urls = [
 @bot.on_message(filters.command(["start"]))
 async def start_command(bot: Client, message: Message):
     # Send a loading message
+    is_subscribed = await get_fsub(bot, message)
+    if not is_subscribed:
+        return
     loading_message = await bot.send_message(
         chat_id=message.chat.id,
         text="Loading... ⏳🔄"
