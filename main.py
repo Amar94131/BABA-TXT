@@ -19,7 +19,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
+from vars import API_ID, API_HASH, BOT_TOKEN, #AUTH_CHANNELS
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
