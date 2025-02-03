@@ -42,6 +42,8 @@ from pyrogram.errors import InviteRequestSent
 
 
 
+
+
 async def get_fsub(bot, message):
     user_id = message.from_user.id
     not_joined = []
@@ -62,11 +64,15 @@ async def get_fsub(bot, message):
     for channel_id in not_joined:
         try:
             chat = await bot.get_chat(channel_id)
-            channel_title = chat.title or "Our Private Channel"
-            invite_link = f"https://t.me/{chat.username}?join" if chat.username else chat.invite_link
-        except Exception:
-            channel_title = "Default Channel"
-            invite_link = "https://telegram.me/Techifybots"
+            channel_title = chat.title or "Join Request Channel"
+            invite_link = chat.invite_link  # Invite link for private channels
+
+            if not invite_link:  # Ensure invite link exists
+                invite_link = await bot.export_chat_invite_link(channel_id)
+
+        except Exception as e:
+            print(f"Error creating invite link: {e}")
+            continue
 
         buttons.append([
             InlineKeyboardButton(f"🔑 Request to Join: {channel_title}", url=invite_link)
@@ -74,7 +80,7 @@ async def get_fsub(bot, message):
 
     await message.reply(
         f"Hello {message.from_user.mention},\n\n"
-        "To access the bot features, please send a request to join our private channels below.",
+        "Please send a request to join the following channels for access:",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
