@@ -19,7 +19,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
+from vars import API_ID, API_HASH, BOT_TOKEN, FORCE_SUB_CHANNEL_1, FORCE_SUB_CHANNEL_2, FORCE_SUB_CHANNEL_3, FORCE_SUB_CHANNEL_4
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -46,88 +46,74 @@ from pyrogram.errors import RPCError
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram import Client
 
-# Function to send the join request buttons
-async def get_fsub(bot, message):
-    user_id = message.from_user.id
-    not_joined = []
+async def start(self):
+        await super().start()
+        usr_bot_me = await self.get_me()
+        self.uptime = datetime.now()
 
-    for channel_id in AUTH_CHANNELS:
+        if FORCE_SUB_CHANNEL_1:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_1)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
+                self.invitelink = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_1 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_1}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_2:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_2)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
+                self.invitelink2 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_2 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_2}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_3:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_3)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
+                self.invitelink3 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_3 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_3}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_4:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_4)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
+                self.invitelink4 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_4 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_4}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
         try:
-            member = await bot.get_chat_member(channel_id, user_id)
-
-            if member.status in ["left", "kicked", "restricted"]:
-                not_joined.append(channel_id)
-        
-        except RPCError:
-            not_joined.append(channel_id)
-
-    if not not_joined:
-        return True
-
-    buttons = []
-    temp_buttons = []
-    
-    for i, channel_id in enumerate(not_joined, start=1):
-        try:
-            chat = await bot.get_chat(channel_id)
-            channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
-
-        except Exception:
-            channel_request_message = f"Please request to join Channel {i}. Admin will approve your request."
-
-        # Add button for joining request
-        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i} - Request to Join", callback_data=f"join_request_{channel_id}_{user_id}"))
-
-        if len(temp_buttons) == 2:
-            buttons.append(temp_buttons)
-            temp_buttons = []
-
-    if temp_buttons:
-        buttons.append(temp_buttons)
-
-    await message.reply(
-        f"Dear {message.from_user.mention},\n\n"
-        "You need to join our update channels to access all the features of this bot. "
-        "Due to server overload, only members of our channels can use the bot. "
-        "Thank you for your understanding! 😊\n\n"
-        "Please request to join the following channels. You will be granted access to the bot immediately:\n\n",
-        reply_markup=InlineKeyboardMarkup(buttons),
-    )
-    return False
-
-# Handle callback query for join request
-async def handle_callback_query(bot, callback_query):
-    if callback_query.data.startswith("join_request_"):
-        # Extracting the channel ID and user ID
-        _, channel_id, user_id = callback_query.data.split("_")
-
-        # Send a message notifying that the user has requested to join the channel
-        # No need for admin approval, as we're giving access immediately
-        await callback_query.answer(
-            f"Your request to join Channel {channel_id} has been received! You now have access to the bot.",
-            show_alert=True,
-        )
-
-        # Activate the user for bot access immediately after request (no admin approval needed)
-        await activate_user_in_bot(bot, user_id, channel_id)
-
-# Function to activate the bot for the user
-async def activate_user_in_bot(bot, user_id, channel_id):
-    # Logic to activate the user in the bot
-    # In real-world, you can store the approved user in a database or a list
-    approved_users = []  # Use a database or persistent storage in production
-    approved_users.append(user_id)
-
-    # Notify the user that they now have access to the bot
-    user = await bot.get_users(user_id)
-    await bot.send_message(
-        user_id,
-        f"Dear {user.first_name},\n\nYour request to join Channel {channel_id} has been approved. You now have full access to all features of the bot! 😊",
-    )
-
-    # Allow the user to use bot features (example: unlock bot commands)
-    print(f"User {user.first_name} is now activated and can use the bot.")
-
+            db_channel = await self.get_chat(CHANNEL_ID)
+            self.db_channel = db_channel
+            test = await self.send_message(chat_id = db_channel.id, text = "Test Message")
+            await test.delete()
+        except Exception as e:
+            self.LOGGER(__name__).warning(e)
+            self.LOGGER(__name__).warning(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
+            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+            sys.exit()
+            
 
 
 
