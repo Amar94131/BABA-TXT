@@ -11,8 +11,6 @@ import urllib.parse
 import yt_dlp
 import cloudscraper
 import datetime
-import master
-import ffmpeg 
 
 from yt_dlp import YoutubeDL
 import yt_dlp as youtube_dl
@@ -32,8 +30,6 @@ from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
-from flask import Flask
-from pyrogram import Client, filters
 from pyrogram.errors import RPCError
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
@@ -86,17 +82,7 @@ async def get_fsub(bot, message):
         reply_markup=InlineKeyboardMarkup(buttons),
     )
     return False
-
-
-
-
-
-
-
-
-
-
-
+# Initialize the bot
 app = Client("my_bot")  # Bot session या API setup.
 
 
@@ -118,6 +104,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "7601649831:AAEMQ9chNVKZe2hm4wEHN4nmgBd8
 # Define aiohttp routes
 routes = web.RouteTableDef()
 
+
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
     return web.json_response("https://baba-txt.onrender.com/")
@@ -130,9 +117,13 @@ async def web_server():
 async def start_bot():
     await bot.start()
     print("Bot is up and running")
+    
+    
+    
 
 async def stop_bot():
     await bot.stop()
+    
 
 async def main():
     if WEBHOOK:
@@ -152,6 +143,7 @@ async def main():
             await bot.polling()  # Run forever, or until interrupted
     except (KeyboardInterrupt, SystemExit):
         await stop_bot()
+  
   
 import random
 
@@ -181,9 +173,16 @@ Busy = InlineKeyboardMarkup(
     ]
 )
 
+
 # Image URLs for the random image feature
 image_urls = [
-    "https://envs.sh/8lA.jpg",
+    "https://i.ibb.co/dpRKmmj/file-3957.jpg",
+    "https://i.ibb.co/NSbPQ5n/file-3956.jpg",
+    "https://i.ibb.co/Z8R4z0g/file-3962.jpg",
+    "https://i.ibb.co/LtqjVy7/file-3958.jpg",
+    "https://i.ibb.co/bm20zfd/file-3959.jpg",
+    "https://i.ibb.co/0V0BngV/file-3960.jpg",
+    "https://i.ibb.co/rQMXQjX/file-3961.jpg",
     # Add more image URLs as needed
 ]
 
@@ -191,18 +190,15 @@ image_urls = [
 @bot.on_message(filters.command(["start"]))
 async def start_command(bot: Client, message: Message):
     # Send a loading message
-    is_subscribed = await get_fsub(bot, message)
-    if not is_subscribed:
-        return
     loading_message = await bot.send_message(
         chat_id=message.chat.id,
         text="Loading... ⏳🔄"
     )
-
   
     # Choose a random image URL
     random_image_url = random.choice(image_urls)
     
+    # Caption for the image
     # Caption for the image
     caption = (
         "𝖧𝖾𝗅𝗅𝗈 𝖽𝖾𝖺𝗋 👋!\n\n𝖨 𝖠𝗆 𝖳𝖷𝖳 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖡𝗈𝗍 𝖴𝗌𝖾 /help\n📖 𝖴𝗌𝖾 /txt 𝗍𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖳𝖷𝖳 𝖥𝗂𝗅𝖾\n\n<blockquote>𝖬𝖺𝖽𝖾 𝖡𝗒 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a></blockquote>"
@@ -220,26 +216,21 @@ async def start_command(bot: Client, message: Message):
     await loading_message.delete()
 
 
-COOKIES_FILE_PATH = os.getenv("COOKIES_FILE_PATH", "youtube_cookies.txt")
-ADMIN_ID = 1928404158 # Admin ID
+COOKIES_FILE_PATH = "youtube_cookies.txt"
 
 @bot.on_message(filters.command("cookies") & filters.private)
 async def cookies_handler(client: Client, m: Message):
     """
     Command: /cookies
-    Allows admin to upload or update a cookies file dynamically.
+    Allows any user to upload a cookies file dynamically.
     """
-    if m.from_user.id != ADMIN_ID:
-        await m.reply_text("You are not authorized to use this command.")
-        return
-
     await m.reply_text(
         "Please upload the cookies file (.txt format).",
         quote=True
     )
 
     try:
-        # Wait for the admin to send the cookies file
+        # Wait for the user to send the cookies file
         input_message: Message = await client.listen(m.chat.id)
 
         # Validate the uploaded file
@@ -248,9 +239,18 @@ async def cookies_handler(client: Client, m: Message):
             return
 
         # Download the cookies file
-        cookies_path = await input_message.download(file_name=COOKIES_FILE_PATH)
+        downloaded_path = await input_message.download()
+
+        # Read the content of the uploaded file
+        with open(downloaded_path, "r") as uploaded_file:
+            cookies_content = uploaded_file.read()
+
+        # Replace the content of the target cookies file
+        with open(COOKIES_FILE_PATH, "w") as target_file:
+            target_file.write(cookies_content)
+
         await input_message.reply_text(
-            f"✅ Cookies file has been successfully updated.\n📂 Saved at: `{COOKIES_FILE_PATH}`"
+            "✅ Cookies updated successfully.\n📂 Saved in `youtube_cookies.txt`."
         )
 
     except Exception as e:
@@ -339,7 +339,8 @@ async def add_user(client, message: Message):
         await message.reply_text(f"User {user_id} added with expiration date {expiration_date}.")
     except ValueError:
         await message.reply_text("Invalid command format. Use: /adduser <user_id> <expiration_date>")
-   
+
+
 # 2. /removeuser
 @bot.on_message(filters.command("removeuser") & filters.private)
 @admin_only
@@ -374,7 +375,7 @@ async def show_users(client, message: Message):
         users_list = "\n".join(
             [f"{idx + 1}. User ID: `{user[0]}`, Expiration Date: `{user[1]}`" for idx, user in enumerate(subscription_data)]
         )
-        await message.reply_text(f"👥 Current Subscribed Users:\n\n{users_list}")
+        await message.reply_text(f"**👥 Current Subscribed Users:**\n\n{users_list}")
     else:
         await message.reply_text("ℹ️ No users found in the subscription data.")
 
@@ -386,14 +387,14 @@ async def my_plan(client, message: Message):
 
     # Define YOUR_ADMIN_ID somewhere in your code
     if user_id == str(YOUR_ADMIN_ID):  # YOUR_ADMIN_ID should be an integer
-        await message.reply_text("✨ You have permanent access!")
+        await message.reply_text("**✨ You have permanent access!**")
     elif any(user[0] == user_id for user in subscription_data):  # Assuming subscription_data is a list of [user_id, expiration_date]
         expiration_date = next(user[1] for user in subscription_data if user[0] == user_id)
         await message.reply_text(
-            f"📅 Your Premium Plan Status\n\n"
-            f"🆔 User ID: `{user_id}`\n"
-            f"⏳ Expiration Date: `{expiration_date}`\n"
-            f"🔒 Status**: Active"
+            f"**📅 Your Premium Plan Status**\n\n"
+            f"**🆔 User ID**: `{user_id}`\n"
+            f"**⏳ Expiration Date**: `{expiration_date}`\n"
+            f"**🔒 Status**: *Active*"
         )
     else:
         await message.reply_text("**❌ You are not a premium user.**")
@@ -443,28 +444,6 @@ async def remove_channel(client, message: Message):
     except ValueError:
         await message.reply_text("Invalid command format. Use: /remove_channels <channel_id>")
 
-# /id Command
-@app.on_message(filters.command("id"))
-async def id_command(client: Client, message: Message):
-    if message.chat.type == "private":
-        # For private chats, return the user ID
-        user_id = message.from_user.id
-        await message.reply_text(
-            f"🎉 Success!\n\n"
-            f"🆔 Your User ID:\n`{user_id}`\n\n"
-            f"📌 Use this ID for further requests."
-        )
-    else:
-        # For groups or channels, return the chat ID
-        chat_id = message.chat.id
-        await message.reply_text(
-            f"✅ Success!\n\n"
-            f"🆔 This Group/Channel ID:\n`{chat_id}`\n\n"
-            f"📌 Use this ID for further requests.\n\n"
-            f"To link this group/channel, use the following command:\n"
-            f"`/add_channel {chat_id}`"
-        )
-
 YOUR_ADMIN_ID = 1928404158
 
 # Helper function to check admin privilege
@@ -483,7 +462,7 @@ async def allowed_channels(client, message: Message):
     channels = read_channels_data()
     if channels:
         channels_list = "\n".join([f"- {channel}" for channel in channels])
-        await message.reply_text(f"📋 Allowed Channels:\n\n{channels_list}")
+        await message.reply_text(f"**📋 Allowed Channels:**\n\n{channels_list}")
     else:
         await message.reply_text("ℹ️ No channels are currently allowed.")
 
@@ -498,15 +477,12 @@ async def remove_all_channels(client, message: Message):
 
     # Clear the channels data
     write_channels_data([])
-    await message.reply_text("✅ All channels have been removed successfully.")
+    await message.reply_text("✅ **All channels have been removed successfully.**")
 
 
 # 6. /stop
 @bot.on_message(filters.command("stop"))
 async def stop_handler(client, message: Message):
-    is_subscribed = await get_fsub(bot, message)
-    if not is_subscribed:
-        return
     if message.chat.type == "private":
         user_id = str(message.from_user.id)
         subscription_data = read_subscription_data()
@@ -519,10 +495,10 @@ async def stop_handler(client, message: Message):
             await message.reply_text("🚫 You are not a premium user. Subscribe to unlock all features! ✨")
             return
 
-    await message.reply_text(" Stopped🚦" , True)
+    await message.reply_text("♦️ 𝐒𝐭𝐨𝐩𝐩𝐞𝐝 ♦️" , True)
     os.execl(sys.executable, sys.executable, *sys.argv)
 
-@bot.on_message(filters.command("txt"))
+@bot.on_message(filters.command("moni"))
 async def moni_handler(client: Client, m: Message):
     if m.chat.type == "private":
         user_id = str(m.from_user.id)
@@ -536,7 +512,7 @@ async def moni_handler(client: Client, m: Message):
             await m.reply_text("❗ You are not a premium user. Subscribe now for exclusive access! 🚀")
             return
             
-    editable = await m.reply_text('𝖳𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖠 𝖳𝗑𝗍 𝖥𝗂𝗅𝖾 𝖲𝖾𝗇𝖽 𝖧𝖾𝗋𝖾 📑')
+    editable = await m.reply_text('𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐀 𝐓𝐱𝐭 𝐅𝐢𝐥𝐞 𝐒𝐞𝐧𝐝 𝐇𝐞𝐫𝐞 ⏍')
 
     try:
         input: Message = await client.listen(editable.chat.id)
@@ -571,26 +547,26 @@ async def moni_handler(client: Client, m: Message):
         print(len(links))
 
     except:
-        await m.reply_text("Invalid file input")
+        await m.reply_text("∝ 𝐈𝐧𝐯𝐚𝐥𝐢𝐝 𝐟𝐢𝐥𝐞 𝐢𝐧𝐩𝐮𝐭.")
         if os.path.exists(x):
             os.remove(x)
 
-    await editable.edit(f"Total Link Found Are 🔗** **{len(links)}**\n\nSend From Where You Want To Download Inital Is**1**")
+    await editable.edit(f"∝ 𝐓𝐨𝐭𝐚𝐥 𝐋𝐢𝐧𝐤 𝐅𝐨𝐮𝐧𝐝 𝐀𝐫𝐞 🔗** **{len(links)}**\n\n𝐒𝐞𝐧𝐝 𝐅𝐫𝐨𝐦 𝐖𝐡𝐞𝐫𝐞 𝐘𝐨𝐮 𝐖𝐚𝐧𝐭 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐈𝐧𝐢𝐭𝐚𝐥 𝐢𝐬 **1**")
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)               
 
     # This is where you would set up your bot and connect the handle_command function      
-    await editable.edit("Enter Batch Name or send 1 for grabing from text filename.")
+    await editable.edit("**Enter Batch Name or send d for grabing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
-    if raw_text0 == '1':
+    if raw_text0 == 'd':
         b_name = file_name
     else:
         b_name = raw_text0
         
-    await editable.edit("Enter File Quality 🎬\n☞ 144\n☞ 240\n☞ 360\n☞ 480\n☞ 720\n☞ 1080\nPlease Choose Quality")
+    await editable.edit("∝ 𝐄𝐧𝐭𝐞𝐫 𝐄𝐞𝐬𝐨𝐥𝐮𝐭𝐢𝐨𝐧 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -614,7 +590,7 @@ async def moni_handler(client: Client, m: Message):
     
     
 
-    await editable.edit("Enter Your Name or send `1` for use default")
+    await editable.edit("Enter Your Name or send `de` for use default")
 
     # Listen for the user's response
     input3: Message = await bot.listen(editable.chat.id)
@@ -627,7 +603,7 @@ async def moni_handler(client: Client, m: Message):
 
     # Default credit message
     credit = "️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == '1':
+    if raw_text3 == 'de':
         CR = "<a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     elif raw_text3:
         CR = raw_text3
@@ -653,18 +629,17 @@ async def moni_handler(client: Client, m: Message):
         count = int(raw_text)
 
     try:
-        # Assuming links is a list of lists and you want to process the second element of each sublist
+        # Assuming links is a list of lists and you want to process the second element of each sublist    
         for i in range(count - 1, len(links)):
-
             # Replace parts of the URL as needed
             V = links[i][1].replace("file/d/","uc?export=download&id=")\
                .replace("www.youtube-nocookie.com/embed", "youtu.be")\
                .replace("?modestbranding=1", "")\
                .replace("/view?usp=sharing","")\
                .replace("youtube.com/embed/", "youtube.com/watch?v=")
-            
+
             url = "https://" + V
-            
+
             if "acecwply" in url:
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
                 
@@ -678,24 +653,37 @@ async def moni_handler(client: Client, m: Message):
             elif 'videos.classplusapp' in url or "tencdn.classplusapp" in url or "webvideos.classplusapp.com" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "videos.classplusapp.com" in url or "media-cdn-a.classplusapp" in url or "media-cdn.classplusapp" in url or "drmcdni" in url:
              url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0'}).json()['url']
 
-            # Handle master.mpd URLs
             elif '/master.mpd' in url:
-                id = url.split("/")[-2]
-                url = "https://d26g5bnklkwsh4.cloudfront.net/" + id + "/master.m3u8"
+             id =  url.split("/")[-2]
+             url =  "https://d26g5bnklkwsh4.cloudfront.net/" + id + "/master.m3u8"
 
-            # Sanitizing the name
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
 
-            # For master.mpd, handle m3u8 URL download
-            if "/master.mpd" in url:
-                if "https://sec1.pw.live/" in url:
-                    url = url.replace("https://sec1.pw.live/", "https://d1d34p8vz63oiq.cloudfront.net/")
+            if 'testbook' in url:
+                id =  url.split("/")[-2]
+                url =  "https://extractapi.vercel.app/classplus?link=https://cpvod.testbook.com/" + id + "/playlist.m3u8"
 
-                # Command to download m3u8 file
-                cmd = f'yt-dlp -o "{name}.mp4" "{url}"'
-                subprocess.run(cmd, shell=True)
-                
+            elif 'cpvod.testbook' in url:
+                id =  url.split("/")[-2]
+                url =  "https://extractapi.vercel.app/classplus?link=https://cpvod.testbook.com/" + id + "/playlist.m3u8"
+             
+            if "/master.mpd" in url :
+                if "https://sec1.pw.live/" in url:
+                    url = url.replace("https://sec1.pw.live/","https://d1d34p8vz63oiq.cloudfront.net/")
+                    print(url)
+                else: 
+                    url = url    
+
+                print("mpd check")
+                key = await helper.get_drm_keys(url)
+                print(key)
+                await m.reply_text(f"got keys form api : \n`{key}`")
+          
+            if "/master.mpd" in url:
+                cmd= f" yt-dlp -k --allow-unplayable-formats -f bestvideo.{quality} --fixup never {url} "
+                print("counted")
+
             if "edge.api.brightcove.com" in url:
                 bcov = 'bcov_auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjQyMzg3OTEsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiZEUxbmNuZFBNblJqVEROVmFWTlFWbXhRTkhoS2R6MDkiLCJmaXJzdF9uYW1lIjoiYVcxV05ITjVSemR6Vm10ak1WUlBSRkF5ZVNzM1VUMDkiLCJlbWFpbCI6Ik5Ga3hNVWhxUXpRNFJ6VlhiR0ppWTJoUk0wMVdNR0pVTlU5clJXSkRWbXRMTTBSU2FHRnhURTFTUlQwPSIsInBob25lIjoiVUhVMFZrOWFTbmQ1ZVcwd1pqUTViRzVSYVc5aGR6MDkiLCJhdmF0YXIiOiJLM1ZzY1M4elMwcDBRbmxrYms4M1JEbHZla05pVVQwOSIsInJlZmVycmFsX2NvZGUiOiJOalZFYzBkM1IyNTBSM3B3VUZWbVRtbHFRVXAwVVQwOSIsImRldmljZV90eXBlIjoiYW5kcm9pZCIsImRldmljZV92ZXJzaW9uIjoiUShBbmRyb2lkIDEwLjApIiwiZGV2aWNlX21vZGVsIjoiU2Ftc3VuZyBTTS1TOTE4QiIsInJlbW90ZV9hZGRyIjoiNTQuMjI2LjI1NS4xNjMsIDU0LjIyNi4yNTUuMTYzIn19.snDdd-PbaoC42OUhn5SJaEGxq0VzfdzO49WTmYgTx8ra_Lz66GySZykpd2SxIZCnrKR6-R10F5sUSrKATv1CDk9ruj_ltCjEkcRq8mAqAytDcEBp72-W0Z7DtGi8LdnY7Vd9Kpaf499P-y3-godolS_7ixClcYOnWxe2nSVD5C9c5HkyisrHTvf6NFAuQC_FD3TzByldbPVKK0ag1UnHRavX8MtttjshnRhv5gJs5DQWj4Ir_dkMcJ4JaVZO3z8j0OxVLjnmuaRBujT-1pavsr1CCzjTbAcBvdjUfvzEhObWfA1-Vl5Y4bUgRHhl1U-0hne4-5fF0aouyu71Y6W0eg'
                 url = url.split("bcov_auth")[0]+bcov
@@ -711,18 +699,22 @@ async def moni_handler(client: Client, m: Message):
             if "embed" in url:
                 ytf = f"bestvideo[height<={raw_text2}]+bestaudio/best[height<={raw_text2}]"
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
+            
+            elif "m3u8" or "livestream" in url:
+                cmd = f'yt-dlp -f "{ytf}" --no-keep-video --remux-video mkv "{url}" -o "{name}.%(ext)s"'
+
            
             elif "youtube.com" in url or "youtu.be" in url:
-                cmd = f'yt-dlp --cookies "{COOKIES_FILE_PATH}" -f "{ytf}" "{url}" -o "{name}.mp4"'
+                cmd = f'yt-dlp --cookies "youtube_cookies.txt" -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             else:
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
-        
-                
+                     
             try:                
                 cc = f'💾 VIDEO ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.mkv\n\n<pre><code>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}'
                 cc1 = f'📒 FILE ID: {str(count).zfill(3)}.\n\n<pre><code>🅀🅄🄰🄻🄸🅃🅈 - {raw_text2}</code></pre>\n\n📜 🅃🄸🅃🄻🄴: {name1}.pdf\n\n<pre><code>🄱🄰🅃🄲🄷 🄽🄰🄼🄴: {b_name}</code></pre>\n\n🔻 Extracted By : {CR}'
-                                                 
+                                  
+                
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -786,16 +778,12 @@ async def moni_handler(client: Client, m: Message):
 
             except Exception as e:
                 await m.reply_text(
-                    f"⌘ Downloding Interested\n\n⌘ Name » {name}\n⌘ Link » `{url}`"
+                    f"⌘ 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐈𝐧𝐭𝐞𝐫𝐮𝐩𝐭𝐞𝐝\n\n⌘ 𝐍𝐚𝐦𝐞 » {name}\n⌘ 𝐋𝐢𝐧𝐤 » `{url}`"
                 )
                 continue
 
     except Exception as e:
         await m.reply_text(e)
     await m.reply_text("DONE ✅")
-
-
-
+    
 bot.run()
-if __name__ == "__main__":
-    asyncio.run(main())
