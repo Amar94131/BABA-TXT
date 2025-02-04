@@ -12,7 +12,7 @@ import yt_dlp
 import cloudscraper
 import datetime
 import master
-import ffmpeg
+import ffmpeg 
 
 from yt_dlp import YoutubeDL
 import yt_dlp as youtube_dl
@@ -28,14 +28,123 @@ from aiohttp import web
 
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from pyrogram.errors import FloodWait, UserNotParticipant
+from pyrogram.errors import FloodWait
+from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
+from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from flask import Flask
+from pyrogram import Client, filters
+
 from pyrogram.errors import RPCError
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-# Bot session setup
-app = Client("my_bot")
+from pyrogram.errors import InviteRequestSent
+
+
+
+from pyrogram.errors import RPCError
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram import Client
+
+async def start(self):
+        await super().start()
+        usr_bot_me = await self.get_me()
+        self.uptime = datetime.now()
+
+        if FORCE_SUB_CHANNEL_1:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_1)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
+                self.invitelink = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_1 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_1}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_2:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_2)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
+                self.invitelink2 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_2 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_2}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_3:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_3)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
+                self.invitelink3 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_3 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_3}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        if FORCE_SUB_CHANNEL_4:
+            try:
+                link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
+                if not link:
+                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_4)
+                    link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
+                self.invitelink4 = link
+            except Exception as a:
+                self.LOGGER(__name__).warning(a)
+                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
+                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_4 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_4}")
+                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+                sys.exit()
+        try:
+            db_channel = await self.get_chat(CHANNEL_ID)
+            self.db_channel = db_channel
+            test = await self.send_message(chat_id = db_channel.id, text = "Test Message")
+            await test.delete()
+        except Exception as e:
+            self.LOGGER(__name__).warning(e)
+            self.LOGGER(__name__).warning(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
+            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
+            sys.exit()
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app = Client("my_bot")  # Bot session या API setup.
+
 
 # Flask App Initialization
 flask_app = Flask(__name__)
@@ -48,62 +157,104 @@ bot = Client(
     bot_token=BOT_TOKEN
 )
 
-# Force Subscription Message
-FORCE_MSG = "Hello {first}\n\n<b>You need to join in my Channel/Group to use me\n\nKindly Please join Channel</b>"
+API_ID    = os.environ.get("API_ID", "26513107")
+API_HASH  = os.environ.get("API_HASH", "f14ce4b58dc8812cfc9665588472f2d4")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "7601649831:AAEMQ9chNVKZe2hm4wEHN4nmgBd8vqeOvKI") 
 
-# Function to check Force Subscription
-async def is_subscribed(client, user_id):
-    if not (FORCE_SUB_CHANNEL_1 or FORCE_SUB_CHANNEL_2 or FORCE_SUB_CHANNEL_3 or FORCE_SUB_CHANNEL_4):
-        return True
+# Define aiohttp routes
+routes = web.RouteTableDef()
 
-    member_status = ["owner", "administrator", "member"]
+@routes.get("/", allow_head=True)
+async def root_route_handler(request):
+    return web.json_response("https://baba-txt.onrender.com/")
 
-    for channel_id in [FORCE_SUB_CHANNEL_1, FORCE_SUB_CHANNEL_2, FORCE_SUB_CHANNEL_3, FORCE_SUB_CHANNEL_4]:
-        if not channel_id:
-            continue
+async def web_server():
+    web_app = web.Application(client_max_size=30000000)
+    web_app.add_routes(routes)
+    return web_app
 
-        try:
-            member = await client.get_chat_member(chat_id=channel_id, user_id=user_id)
-        except UserNotParticipant:
-            return False
+async def start_bot():
+    await bot.start()
+    print("Bot is up and running")
 
-        if member.status not in member_status:
-            return False
+async def stop_bot():
+    await bot.stop()
 
-    return True
+async def main():
+    if WEBHOOK:
+        # Start the web server
+        app_runner = web.AppRunner(await web_server())
+        await app_runner.setup()
+        site = web.TCPSite(app_runner, "0.0.0.0", PORT)
+        await site.start()
+        print(f"Web server started on port {PORT}")
 
-# Middleware to enforce force subscription
-async def force_subscription(client, message: Message):
-    is_user_subscribed = await is_subscribed(client, message.from_user.id)
-    if not is_user_subscribed:
-        await message.reply_text(FORCE_MSG.format(first=message.from_user.first_name))
-        return False
-    return True
+    # Start the bot
+    await start_bot()
 
-# Start Command Handler with Force Sub Check
+    # Keep the program running
+    try:
+        while True:
+            await bot.polling()  # Run forever, or until interrupted
+    except (KeyboardInterrupt, SystemExit):
+        await stop_bot()
+  
+import random
+
+# Inline keyboard for start command
+keyboard = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton(text="📞 Contact", url="https://t.me/AllCourseADMIN_BOT"),
+            InlineKeyboardButton(text="📖 Course Update", url="https://t.me/+VFhUKQvM7PVlYWQ1"),
+        ],
+        [
+            InlineKeyboardButton(text="🪄 Course Deal", url="https://t.me/+h5M1Xp0a7rM5ZDhl"),
+        ],
+    ]
+)
+
+# Inline keyboard for busy status
+Busy = InlineKeyboardMarkup(
+    [
+        [
+            InlineKeyboardButton(text="📞 Contact", url="https://t.me/AllCourseADMIN_BOT"),
+            InlineKeyboardButton(text="📖 Course Update", url="https://t.me/+VFhUKQvM7PVlYWQ1"),
+        ],
+        [
+            InlineKeyboardButton(text="🪄 Course Deal", url="https://t.me/+h5M1Xp0a7rM5ZDhl"),
+        ],
+    ]
+)
+
+# Image URLs for the random image feature
+image_urls = [
+    "https://envs.sh/8lA.jpg",
+    # Add more image URLs as needed
+]
+
+# Start command handler
 @bot.on_message(filters.command(["start"]))
 async def start_command(bot: Client, message: Message):
-    is_user_subscribed = await force_subscription(bot, message)
-    if not is_user_subscribed:
+    # Send a loading message
+    is_subscribed = await get_fsub(bot, message)
+    if not is_subscribed:
         return
-
-    keyboard = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(text="📞 Contact", url="https://t.me/AllCourseADMIN_BOT"),
-                InlineKeyboardButton(text="📖 Course Update", url="https://t.me/+VFhUKQvM7PVlYWQ1"),
-            ],
-            [
-                InlineKeyboardButton(text="🪄 Course Deal", url="https://t.me/+h5M1Xp0a7rM5ZDhl"),
-            ],
-        ]
+    loading_message = await bot.send_message(
+        chat_id=message.chat.id,
+        text="Loading... ⏳🔄"
     )
 
-    random_image_url = "https://envs.sh/8lA.jpg"
+  
+    # Choose a random image URL
+    random_image_url = random.choice(image_urls)
+    
+    # Caption for the image
     caption = (
         "𝖧𝖾𝗅𝗅𝗈 𝖽𝖾𝖺𝗋 👋!\n\n𝖨 𝖠𝗆 𝖳𝖷𝖳 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖡𝗈𝗍 𝖴𝗌𝖾 /help\n📖 𝖴𝗌𝖾 /txt 𝗍𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖳𝖷𝖳 𝖥𝗂𝗅𝖾\n\n<blockquote>𝖬𝖺𝖽𝖾 𝖡𝗒 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a></blockquote>"
     )
 
+    # Send the image with caption and buttons
     await bot.send_photo(
         chat_id=message.chat.id,
         photo=random_image_url,
@@ -111,14 +262,96 @@ async def start_command(bot: Client, message: Message):
         reply_markup=keyboard
     )
 
-# Help Command
-@bot.on_message(filters.command("help"))
-async def help_command(bot: Client, message: Message):
-    is_user_subscribed = await force_subscription(bot, message)
-    if not is_user_subscribed:
+    # Delete the loading message
+    await loading_message.delete()
+
+
+COOKIES_FILE_PATH = os.getenv("COOKIES_FILE_PATH", "youtube_cookies.txt")
+ADMIN_ID = 1928404158 # Admin ID
+
+@bot.on_message(filters.command("cookies") & filters.private)
+async def cookies_handler(client: Client, m: Message):
+    """
+    Command: /cookies
+    Allows admin to upload or update a cookies file dynamically.
+    """
+    if m.from_user.id != ADMIN_ID:
+        await m.reply_text("You are not authorized to use this command.")
         return
 
-    help_text = (
+    await m.reply_text(
+        "Please upload the cookies file (.txt format).",
+        quote=True
+    )
+
+    try:
+        # Wait for the admin to send the cookies file
+        input_message: Message = await client.listen(m.chat.id)
+
+        # Validate the uploaded file
+        if not input_message.document or not input_message.document.file_name.endswith(".txt"):
+            await m.reply_text("Invalid file type. Please upload a .txt file.")
+            return
+
+        # Download the cookies file
+        cookies_path = await input_message.download(file_name=COOKIES_FILE_PATH)
+        await input_message.reply_text(
+            f"✅ Cookies file has been successfully updated.\n📂 Saved at: `{COOKIES_FILE_PATH}`"
+        )
+
+    except Exception as e:
+        await m.reply_text(f"⚠️ An error occurred: {str(e)}")
+
+
+# File paths
+SUBSCRIPTION_FILE = "subscription_data.txt"
+CHANNELS_FILE = "channels_data.json"
+
+# Admin ID
+YOUR_ADMIN_ID = 1928404158
+
+# Function to read subscription data
+def read_subscription_data():
+    if not os.path.exists(SUBSCRIPTION_FILE):
+        return []
+    with open(SUBSCRIPTION_FILE, "r") as f:
+        return [line.strip().split(",") for line in f.readlines()]
+
+
+# Function to read channels data
+def read_channels_data():
+    if not os.path.exists(CHANNELS_FILE):
+        return []
+    with open(CHANNELS_FILE, "r") as f:
+        return json.load(f)
+
+
+# Function to write subscription data
+def write_subscription_data(data):
+    with open(SUBSCRIPTION_FILE, "w") as f:
+        for user in data:
+            f.write(",".join(user) + "\n")
+
+
+# Function to write channels data
+def write_channels_data(data):
+    with open(CHANNELS_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+# Admin-only decorator
+def admin_only(func):
+    async def wrapper(client, message: Message):
+        if message.from_user.id != YOUR_ADMIN_ID:
+            await message.reply_text("You are not authorized to use this command.")
+            return
+        await func(client, message)
+    return wrapper
+
+# How to use:-
+@bot.on_message(filters.command("help"))
+async def guide_handler(client: Client, message: Message):
+    guide_text = (
         "🔑 𝖧𝗈𝗐 𝗍𝗈 𝗀𝖾𝗍 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗐𝗂𝗍𝗁 𝖯𝗋𝖾𝗆𝗂𝗎𝗆\n\n" 
         "1. 𝖥𝗂𝗋𝗌𝗍 𝗈𝖿 𝖺𝗅𝗅, 𝖼𝗈𝗇𝗍𝖺𝖼𝗍 𝗍𝗁𝖾 𝗈𝗐𝗇𝖾𝗋 𝖺𝗇𝖽 𝖻𝗎𝗒 𝖺 𝗉𝗋𝖾𝗆𝗂𝗎𝗆 𝗉𝗅𝖺𝗇 💰\n"
         "2. 𝖨𝖿 𝗒𝗈𝗎 𝖺𝗋𝖾 𝖺 𝗉𝗋𝖾𝗆𝗂𝗎𝗆 𝗎𝗌𝖾𝗋 𝗒𝗈𝗎 𝖼𝖺𝗇 𝖼𝗁𝖾𝖼𝗄 𝗒𝗈𝗎𝗋 𝗉𝗅𝖺𝗇 𝖻𝗒 𝗎𝗌𝗂𝗇𝗀 /myplan 🔍\n\n"
@@ -135,7 +368,6 @@ async def help_command(bot: Client, message: Message):
         "10. /allowed_channels \n\n"
         "A𝗇𝗒 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇𝗌 💬 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a>"
     )
-    
     await message.reply_text(guide_text)
 
 # 1. /adduser
