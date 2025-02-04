@@ -66,7 +66,7 @@ async def get_fsub(bot, message):
                 raise ValueError("No invite link available")
 
         except Exception:
-            channel_link = "https://telegram.me/Techifybots"
+            channel_link = "https://t.me/MovieDawnloadHub"
 
         temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i}", url=channel_link))
 
