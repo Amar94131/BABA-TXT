@@ -250,14 +250,16 @@ image_urls = [
 # Start command handler
 @bot.on_message(filters.command(["start"]))
 async def start_command(bot: Client, message: Message):
-dispatcher.add_handler(CallbackQueryHandler(check_joined))
+    dispatcher.add_handler(CallbackQueryHandler(check_joined))
 
     # Message handler (to restrict access to all messages)
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, restrict_access(lambda update, context: None)))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, 
+                                          restrict_access(lambda update, context: None)))
 
     # Start the Bot
     updater.start_polling()
     updater.idle()
+
     # Send a loading message
     loading_message = await bot.send_message(
         chat_id=message.chat.id,
