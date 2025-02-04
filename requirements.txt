@@ -40,3 +40,5 @@ aria2
 pycurl
 bs4
 httpx
+
+python-telegram-bot
