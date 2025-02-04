@@ -19,7 +19,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, FORCE_SUB_CHANNEL_1, FORCE_SUB_CHANNEL_2, FORCE_SUB_CHANNEL_3, FORCE_SUB_CHANNEL_4
+from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -34,104 +34,58 @@ from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from flask import Flask
 from pyrogram import Client, filters
-
 from pyrogram.errors import RPCError
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-from pyrogram.errors import InviteRequestSent
+async def get_fsub(bot, message):
+    user_id = message.from_user.id
+    not_joined = []
 
-
-
-from pyrogram.errors import RPCError
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram import Client
-
-async def start(self):
-        await super().start()
-        usr_bot_me = await self.get_me()
-        self.uptime = datetime.now()
-
-        if FORCE_SUB_CHANNEL_1:
-            try:
-                link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
-                if not link:
-                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_1)
-                    link = (await self.get_chat(FORCE_SUB_CHANNEL_1)).invite_link
-                self.invitelink = link
-            except Exception as a:
-                self.LOGGER(__name__).warning(a)
-                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
-                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_1 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_1}")
-                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
-                sys.exit()
-        if FORCE_SUB_CHANNEL_2:
-            try:
-                link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
-                if not link:
-                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_2)
-                    link = (await self.get_chat(FORCE_SUB_CHANNEL_2)).invite_link
-                self.invitelink2 = link
-            except Exception as a:
-                self.LOGGER(__name__).warning(a)
-                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
-                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_2 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_2}")
-                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
-                sys.exit()
-        if FORCE_SUB_CHANNEL_3:
-            try:
-                link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
-                if not link:
-                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_3)
-                    link = (await self.get_chat(FORCE_SUB_CHANNEL_3)).invite_link
-                self.invitelink3 = link
-            except Exception as a:
-                self.LOGGER(__name__).warning(a)
-                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
-                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_3 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_3}")
-                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
-                sys.exit()
-        if FORCE_SUB_CHANNEL_4:
-            try:
-                link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
-                if not link:
-                    await self.export_chat_invite_link(FORCE_SUB_CHANNEL_4)
-                    link = (await self.get_chat(FORCE_SUB_CHANNEL_4)).invite_link
-                self.invitelink4 = link
-            except Exception as a:
-                self.LOGGER(__name__).warning(a)
-                self.LOGGER(__name__).warning("Bot can't Export Invite link from Force Sub Channel!")
-                self.LOGGER(__name__).warning(f"Please Double check the FORCE_SUB_CHANNEL_4 value and Make sure Bot is Admin in channel with Invite Users via Link Permission, Current Force Sub Channel Value: {FORCE_SUB_CHANNEL_4}")
-                self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
-                sys.exit()
+    for channel_id in AUTH_CHANNELS:
         try:
-            db_channel = await self.get_chat(CHANNEL_ID)
-            self.db_channel = db_channel
-            test = await self.send_message(chat_id = db_channel.id, text = "Test Message")
-            await test.delete()
-        except Exception as e:
-            self.LOGGER(__name__).warning(e)
-            self.LOGGER(__name__).warning(f"Make Sure bot is Admin in DB Channel, and Double check the CHANNEL_ID Value, Current Value {CHANNEL_ID}")
-            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/TitanMattersSupport for support")
-            sys.exit()
+            member = await bot.get_chat_member(channel_id, user_id)
+
+            if member.status in ["left", "kicked", "restricted"]:
+                not_joined.append(channel_id)
+        
+        except RPCError:
+            not_joined.append(channel_id)
+
+    if not not_joined:
+        return True
+
+    buttons = []
+    temp_buttons = []
+    
+    for i, channel_id in enumerate(not_joined, start=1):
+        try:
+            chat = await bot.get_chat(channel_id)
+            channel_link = chat.invite_link
             
+            if not channel_link:
+                raise ValueError("No invite link available")
 
+        except Exception:
+            channel_link = "https://telegram.me/Techifybots"
 
+        temp_buttons.append(InlineKeyboardButton(f"📢 Channel {i}", url=channel_link))
 
+        if len(temp_buttons) == 2:
+            buttons.append(temp_buttons)
+            temp_buttons = []
 
+    if temp_buttons:
+        buttons.append(temp_buttons)  # Add remaining buttons if any
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    await message.reply(
+        f"Dear {message.from_user.mention},\n\n"
+        "You need to join our update channels to access all the features of this bot. "
+        "Due to server overload, only members of our channels can use the bot. "
+        "Thank you for your understanding! 😊\n\n"
+        "Please join the following channels to proceed:",
+        reply_markup=InlineKeyboardMarkup(buttons),
+    )
+    return False
 
 
 
@@ -157,7 +111,7 @@ bot = Client(
     bot_token=BOT_TOKEN
 )
 
-API_ID    = os.environ.get("API_ID", "26513107")
+API_ID  = os.environ.get("API_ID", "26513107")
 API_HASH  = os.environ.get("API_HASH", "f14ce4b58dc8812cfc9665588472f2d4")
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "7601649831:AAEMQ9chNVKZe2hm4wEHN4nmgBd8vqeOvKI") 
 
