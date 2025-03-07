@@ -17,7 +17,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN,
+from vars import API_ID, API_HASH, BOT_TOKEN
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -33,30 +33,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 
 
 
-from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
-from telegram.constants import ParseMode
-from telegram.inline.inlinekeyboardbutton import InlineKeyboardButton
-from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 
-
-
-
-
-
-
-
-
-
-
-
-
-    return False
-# Initialize the bot
-app = Client("my_bot")  # Bot session या API setup.
-
-
-# Flask App Initialization
 flask_app = Flask(__name__)
 
 # Initialize the bot
