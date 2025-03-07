@@ -17,7 +17,7 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, AUTH_CHANNELS
+from vars import API_ID, API_HASH, BOT_TOKEN,
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -41,109 +41,8 @@ from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 
 
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
-import logging
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-# Define the channels/groups that users need to join
-REQUIRED_CHANNELS = [
-    {"channel_id": "-1002443891365", "channel_name": "Channel 1"},
-    {"channel_id": "-1002496887960", "channel_name": "Channel 2"},
-    {"channel_id": "-1002456070985", "channel_name": "Channel 3"},
-]
-
-# Function to check if user is a member of all required channels
-def check_channels(user_id: int, context: CallbackContext) -> list:
-    not_joined = []
-    for channel in REQUIRED_CHANNELS:
-        try:
-            member = context.bot.get_chat_member(channel["channel_id"], user_id)
-            if member.status not in ["member", "administrator", "creator"]:
-                not_joined.append(channel)
-        except Exception as e:
-            logger.error(f"Error checking channel membership: {e}")
-            not_joined.append(channel)
-    return not_joined
-
-# Middleware to check channel membership before processing any command/message
-def restrict_access(handler):
-    def wrapper(update: Update, context: CallbackContext):
-        user_id = update.message.from_user.id
-        not_joined = check_channels(user_id, context)
-
-        if not_joined:
-            # If user hasn't joined all channels, show them the list of channels to join
-            keyboard = []
-            for channel in not_joined:
-                keyboard.append([InlineKeyboardButton(channel["channel_name"], url=f"https://t.me/{channel['channel_id'][1:]}")])
-
-            keyboard.append([InlineKeyboardButton("I've Joined All", callback_data="check_joined")])
-            reply_markup = InlineKeyboardMarkup(keyboard)
-
-            update.message.reply_text(
-                f"Please join the following channels to use this bot:",
-                reply_markup=reply_markup
-            )
-            return  # Stop further processing
-        else:
-            # If user has joined all channels, proceed with the handler
-            return handler(update, context)
-    return wrapper
-
-# Start command
-@restrict_access
-def start(update: Update, context: CallbackContext) -> None:
-    first_name = update.message.from_user.first_name
-    update.message.reply_text(f"Welcome {first_name}! You have joined all required channels.")
-
-# Callback for "I've Joined All" button
-def check_joined(update: Update, context: CallbackContext) -> None:
-    query = update.callback_query
-    user_id = query.from_user.id
-
-    # Check if user is a member of all required channels
-    not_joined = check_channels(user_id, context)
-
-    if not_joined:
-        # If user hasn't joined all channels, show them the list again
-        keyboard = []
-        for channel in not_joined:
-            keyboard.append([InlineKeyboardButton(channel["channel_name"], url=f"https://t.me/{channel['channel_id'][1:]}")])
-
-        keyboard.append([InlineKeyboardButton("I've Joined All", callback_data="check_joined")])
-        reply_markup = InlineKeyboardMarkup(keyboard)
-
-        query.edit_message_text(
-            text="You still need to join the following channels:",
-            reply_markup=reply_markup
-        )
-    else:
-        # If user has joined all channels, welcome them
-        query.edit_message_text("Thank you for joining all channels! You can now use the bot.")
-
-# Main function
-#def main() -> None:
-    # Replace 'YOUR_BOT_TOKEN' with your bot's token
-   # updater = Updater("YOUR_BOT_TOKEN")
-
-    #dispatcher = updater.dispatcher
-
-    # Command handlers
-    dispatcher.add_handler(CommandHandler("start", start))
-
-    # Callback query handler
-    #dispatcher.add_handler(CallbackQueryHandler(check_joined))
-
-    # Message handler (to restrict access to all messages)
-   # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, restrict_access(lambda update, context: None)))
-
-    # Start the Bot
-   # updater.start_polling()
-   # updater.idle()
 
 
 
