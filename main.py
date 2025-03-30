@@ -242,7 +242,6 @@ def admin_only(func):
 # How to use:-
 @bot.on_message(filters.command("help"))
 async def guide_handler(client: Client, message: Message):
-        return
     guide_text = (
         "🔑 𝖧𝗈𝗐 𝗍𝗈 𝗀𝖾𝗍 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗐𝗂𝗍𝗁 𝖯𝗋𝖾𝗆𝗂𝗎𝗆\n\n" 
         "1. 𝖥𝗂𝗋𝗌𝗍 𝗈𝖿 𝖺𝗅𝗅, 𝖼𝗈𝗇𝗍𝖺𝖼𝗍 𝗍𝗁𝖾 𝗈𝗐𝗇𝖾𝗋 𝖺𝗇𝖽 𝖻𝗎𝗒 𝖺 𝗉𝗋𝖾𝗆𝗂𝗎𝗆 𝗉𝗅𝖺𝗇 💰\n"
