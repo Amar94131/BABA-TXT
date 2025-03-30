@@ -11,7 +11,8 @@ import urllib.parse
 import yt_dlp
 import cloudscraper
 import datetime
-
+import master
+import ffmpeg 
 from yt_dlp import YoutubeDL
 import yt_dlp as youtube_dl
 from core import download_and_send_video
@@ -23,7 +24,6 @@ from pyromod import listen
 from subprocess import getstatusoutput
 from pytube import YouTube
 from aiohttp import web
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.errors import FloodWait
@@ -32,10 +32,7 @@ from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from flask import Flask
 
-
-
 flask_app = Flask(__name__)
-
 # Initialize the bot
 bot = Client(
     "bot",
@@ -51,7 +48,6 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "7601649831:AAEMQ9chNVKZe2hm4wEHN4nmgBd8
 # Define aiohttp routes
 routes = web.RouteTableDef()
 
-
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
     return web.json_response("https://baba-txt.onrender.com/")
@@ -65,13 +61,9 @@ async def start_bot():
     await bot.start()
     print("Bot is up and running")
     
-    
-    
-
 async def stop_bot():
     await bot.stop()
     
-
 async def main():
     if WEBHOOK:
         # Start the web server
@@ -90,7 +82,6 @@ async def main():
             await bot.polling()  # Run forever, or until interrupted
     except (KeyboardInterrupt, SystemExit):
         await stop_bot()
-  
   
 import random
 
@@ -120,7 +111,6 @@ Busy = InlineKeyboardMarkup(
     ]
 )
 
-
 # Image URLs for the random image feature
 image_urls = [
     "https://i.ibb.co/dpRKmmj/file-3957.jpg",
@@ -136,10 +126,6 @@ image_urls = [
 # Start command handler
 @bot.on_message(filters.command(["start"]))
 async def start_command(bot: Client, message: Message):
-    # Start the Bot
-    updater.start_polling()
-    updater.idle()
-
     # Send a loading message
     loading_message = await bot.send_message(
         chat_id=message.chat.id,
@@ -150,10 +136,14 @@ async def start_command(bot: Client, message: Message):
     random_image_url = random.choice(image_urls)
     
     # Caption for the image
-    # Caption for the image
     caption = (
         "𝖧𝖾𝗅𝗅𝗈 𝖽𝖾𝖺𝗋 👋!\n\n𝖨 𝖠𝗆 𝖳𝖷𝖳 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖡𝗈𝗍 𝖴𝗌𝖾 /help\n📖 𝖴𝗌𝖾 /txt 𝗍𝗈 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽 𝖥𝗋𝗈𝗆 𝖳𝖷𝖳 𝖥𝗂𝗅𝖾\n\n<blockquote>𝖬𝖺𝖽𝖾 𝖡𝗒 <a href='https://t.me/AllCourseADMIN_BOT'>🄰🄳🄼🄸🄽</a></blockquote>"
     )
+
+
+
+
+
 
     # Send the image with caption and buttons
     await bot.send_photo(
@@ -168,6 +158,7 @@ async def start_command(bot: Client, message: Message):
 
 
 COOKIES_FILE_PATH = "youtube_cookies.txt"
+ADMIN_ID = 7136372052 # Admin ID
 
 @bot.on_message(filters.command("cookies") & filters.private)
 async def cookies_handler(client: Client, m: Message):
@@ -175,6 +166,10 @@ async def cookies_handler(client: Client, m: Message):
     Command: /cookies
     Allows any user to upload a cookies file dynamically.
     """
+    if m.from_user.id != ADMIN_ID:
+        await m.reply_text("You are not authorized to use this command.")
+        return
+        
     await m.reply_text(
         "Please upload the cookies file (.txt format).",
         quote=True
@@ -190,18 +185,9 @@ async def cookies_handler(client: Client, m: Message):
             return
 
         # Download the cookies file
-        downloaded_path = await input_message.download()
-
-        # Read the content of the uploaded file
-        with open(downloaded_path, "r") as uploaded_file:
-            cookies_content = uploaded_file.read()
-
-        # Replace the content of the target cookies file
-        with open(COOKIES_FILE_PATH, "w") as target_file:
-            target_file.write(cookies_content)
-
+        cookies_path = await input_message.download(file_name=COOKIES_FILE_PATH)
         await input_message.reply_text(
-            "✅ Cookies updated successfully.\n📂 Saved in `youtube_cookies.txt`."
+            f"✅ Cookies file has been successfully updated.\n📂 Saved at: `{COOKIES_FILE_PATH}`"
         )
 
     except Exception as e:
