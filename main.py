@@ -242,8 +242,6 @@ def admin_only(func):
 # How to use:-
 @bot.on_message(filters.command("help"))
 async def guide_handler(client: Client, message: Message):
-    is_subscribed = await get_fsub(bot, message)
-    if not is_subscribed:
         return
     guide_text = (
         "🔑 𝖧𝗈𝗐 𝗍𝗈 𝗀𝖾𝗍 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗐𝗂𝗍𝗁 𝖯𝗋𝖾𝗆𝗂𝗎𝗆\n\n" 
